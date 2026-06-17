@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 聊天集成指南 - Furida</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Furida</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="../posts.html">文章</a></li>
+                <li><a href="../chat.html">AI 聊天</a></li>
+                <li><a href="../about.html">关于</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main>
+        <article class="post">
+            <h1>AI 聊天集成指南</h1>
+            <div class="meta">2026-06-17</div>
+            
+            <div class="content">
+                <h2>概述</h2>
+                <p>
+                    本文将详细介绍如何在 Furida 博客中集成 AI 聊天功能。
+                    我们提供了三种不同的集成方案，你可以根据自己的需求选择最适合的方案。
+                </p>
+
+                <h2>三种集成方案</h2>
+
+                <h3>方案 1: Hugging Face Inference API (推荐免费)</h3>
+                <p>
+                    Hugging Face 提供了免费的 AI 模型推理服务，无需信用卡。
+                </p>
+                <p><strong>优点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>完全免费</li>
+                    <li>无需服务器</li>
+                    <li>支持多种开源模型</li>
+                    <li>集成简单</li>
+                </ul>
+                <p><strong>缺点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>受免费配额限制</li>
+                    <li>速度可能较慢</li>
+                </ul>
+
+                <p><strong>快速开始：</strong></p>
+                <ol style="margin-left: 2rem; line-height: 2;">
+                    <li>访问 <a href="https://huggingface.co/settings/tokens" target="_blank">Hugging Face 设置</a></li>
+                    <li>创建新的 API Token</li>
+                    <li>复制 Token</li>
+                    <li>在 <code>js/chat.js</code> 中设置：
+                        <pre><code>const HF_API_KEY = 'your_token_here';</code></pre>
+                    </li>
+                    <li>刷新页面开始使用</li>
+                </ol>
+
+                <h3>方案 2: 本地离线模型 (完全免费)</h3>
+                <p>
+                    使用 Ollama 在本地运行开源 AI 模型，完全不依赖网络。
+                </p>
+                <p><strong>优点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>完全离线，隐私保护</li>
+                    <li>无流量限制</li>
+                    <li>快速响应</li>
+                </ul>
+                <p><strong>缺点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>需要本地硬件资源</li>
+                    <li>需要手动部署</li>
+                </ul>
+
+                <p><strong>快速开始：</strong></p>
+                <ol style="margin-left: 2rem; line-height: 2;">
+                    <li>下载并安装 <a href="https://ollama.ai" target="_blank">Ollama</a></li>
+                    <li>运行命令下载模型：
+                        <pre><code>ollama pull llama2</code></pre>
+                    </li>
+                    <li>启动 Ollama 服务：
+                        <pre><code>ollama serve</code></pre>
+                    </li>
+                    <li>更新 <code>js/chat.js</code> 中的 API 端点为本地地址
+                    </li>
+                    <li>刷新页面开始使用</li>
+                </ol>
+
+                <h3>方案 3: 自定义后端 (最灵活)</h3>
+                <p>
+                    构建自己的 Python/Node.js 后端来处理 AI 请求。
+                </p>
+                <p><strong>优点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>完全可定制</li>
+                    <li>支持任何 AI 模型</li>
+                    <li>更强的控制力</li>
+                </ul>
+                <p><strong>缺点：</strong></p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>需要部署后端服务器</li>
+                    <li>可能需要付费托管</li>
+                </ul>
+
+                <p><strong>Python Flask 示例：</strong></p>
+                <pre><code>from flask import Flask, request, jsonify
+from flask_cors import CORS
+import your_ai_model
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.json
+    message = data.get('message')
+    
+    # 调用你的 AI 模型
+    response = your_ai_model.generate(message)
+    
+    return jsonify({'response': response})
+
+if __name__ == '__main__':
+    app.run()</code></pre>
+
+                <h2>部署考虑</h2>
+                <p><strong>如果使用方案 1 或 2：</strong> 可以直接在 GitHub Pages 上运行，无需额外部署。</p>
+                <p><strong>如果使用方案 3：</strong> 需要选择托管平台，例如：</p>
+                <ul style="margin-left: 2rem; line-height: 1.8;">
+                    <li>Railway (国际)</li>
+                    <li>Render (国际)</li>
+                    <li>阿里云函数计算 (国内)</li>
+                    <li>腾讯云云函数 (国内)</li>
+                </ul>
+
+                <h2>测试你的集成</h2>
+                <ol style="margin-left: 2rem; line-height: 2;">
+                    <li>打开浏览器开发者工具 (F12)</li>
+                    <li>进入 Console 标签</li>
+                    <li>查看是否有错误信息</li>
+                    <li>在聊天页面测试发送消息</li>
+                </ol>
+
+                <h2>常见问题</h2>
+                <h3>Q: 我应该使用哪个方案？</h3>
+                <p>
+                    A: 如果你想快速开始，推荐使用方案 1 (Hugging Face)。
+                    如果你需要完全隐私，使用方案 2 (Ollama)。
+                    如果你有特殊需求，使用方案 3 (自定义后端)。
+                </p>
+
+                <h3>Q: 可以同时使用多个方案吗？</h3>
+                <p>
+                    A: 可以，修改 <code>chat.js</code> 中的 <code>getAIResponse</code> 函数来支持多个后端。
+                </p>
+
+                <h3>Q: 如何处理 CORS 错误？</h3>
+                <p>
+                    A: 如果你的后端无法从浏览器访问，需要启用 CORS。
+                    对于 Flask，安装 flask-cors 并使用 <code>@cross_origin()</code> 装饰器。
+                </p>
+
+                <h2>下一步</h2>
+                <ul style="margin-left: 2rem; line-height: 2;">
+                    <li>选择一个集成方案并实施</li>
+                    <li>测试聊天功能</li>
+                    <li>访问 <a href="deployment.html">部署指南</a> 将博客发布到网络</li>
+                </ul>
+            </div>
+        </article>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="getting-started.html" class="btn btn-primary">← 上一篇</a>
+            <a href="deployment.html" class="btn btn-secondary" style="margin-left: 1rem;">下一篇 →</a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Furida. 由 yixuanliu483-creator 创建</p>
+            <p>使用 Python + HTML5 + CSS3 构建 | 托管在 GitHub Pages</p>
+        </div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+</body>
+</html>
