@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Furida - 个人博客与 AI 聊天助手">
+    <meta name="description" content="Furida - 个人博客">
     <title>Furida - 个人博客</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -15,8 +15,7 @@
             <ul class="nav-links">
                 <li><a href="index.html" class="active">首页</a></li>
                 <li><a href="posts.html">文章</a></li>
-                <li><a href="chat.html">AI 聊天</a></li>
-                <li><a href="about.html">关于</a></li>
+                <li><a href="chat.html">AI 助手</a></li>
             </ul>
         </div>
     </nav>
@@ -27,10 +26,10 @@
         <section class="hero">
             <div class="container">
                 <h1>欢迎来到 Furida</h1>
-                <p>我的个人博客 × AI 聊天助手</p>
+                <p>分享想法，记录生活</p>
                 <div class="hero-buttons">
                     <a href="posts.html" class="btn btn-primary">阅读文章</a>
-                    <a href="chat.html" class="btn btn-secondary">与 AI 聊天</a>
+                    <a href="chat.html" class="btn btn-secondary">AI 助手</a>
                 </div>
             </div>
         </section>
@@ -39,79 +38,12 @@
         <section class="recent-posts">
             <div class="container">
                 <h2>最新文章</h2>
-                <div class="posts-grid">
-                    <article class="post-card">
-                        <h3><a href="posts/getting-started.html">快速开始</a></h3>
-                        <div class="meta">2026-06-17</div>
-                        <p>欢迎来到我的博客！这篇文章将帮助你快速了解博客的功能和使用方法。</p>
-                        <a href="posts/getting-started.html" class="read-more">阅读更多 →</a>
-                    </article>
-
-                    <article class="post-card">
-                        <h3><a href="posts/ai-integration.html">AI 聊天集成指南</a></h3>
-                        <div class="meta">2026-06-17</div>
-                        <p>了解如何在博客中集成你的 AI 模型，实现智能聊天功能。</p>
-                        <a href="posts/ai-integration.html" class="read-more">阅读更多 →</a>
-                    </article>
-
-                    <article class="post-card">
-                        <h3><a href="posts/deployment.html">部署到 GitHub Pages</a></h3>
-                        <div class="meta">2026-06-17</div>
-                        <p>一步一步教你如何免费部署博客到 GitHub Pages，在中国也能快速访问。</p>
-                        <a href="posts/deployment.html" class="read-more">阅读更多 →</a>
-                    </article>
+                <div class="posts-grid" id="recentPosts">
+                    <!-- 动态加载文章 -->
                 </div>
                 <div class="view-all">
                     <a href="posts.html" class="btn btn-outline">查看所有文章</a>
                 </div>
-            </div>
-        </section>
-
-        <!-- 功能介绍 -->
-        <section class="features">
-            <div class="container">
-                <h2>核心功能</h2>
-                <div class="features-grid">
-                    <div class="feature">
-                        <div class="icon">📝</div>
-                        <h3>Markdown 博客</h3>
-                        <p>简洁优雅的文章展示，支持代码高亮和数学公式</p>
-                    </div>
-                    <div class="feature">
-                        <div class="icon">💬</div>
-                        <h3>AI 聊天</h3>
-                        <p>集成免费 AI 模型，实现智能对话，未来支持自定义模型</p>
-                    </div>
-                    <div class="feature">
-                        <div class="icon">⚡</div>
-                        <h3>快速加载</h3>
-                        <p>静态网站 + CDN 加速，国内访问体验优秀</p>
-                    </div>
-                    <div class="feature">
-                        <div class="icon">📱</div>
-                        <h3>响应式设计</h3>
-                        <p>完美适配手机、平板和桌面各种屏幕尺寸</p>
-                    </div>
-                    <div class="feature">
-                        <div class="icon">🔒</div>
-                        <h3>隐私保护</h3>
-                        <p>完全静态网站，无需任何服务器，数据完全由你掌控</p>
-                    </div>
-                    <div class="feature">
-                        <div class="icon">🚀</div>
-                        <h3>易于扩展</h3>
-                        <p>模块化设计，轻松添加新功能和自定义内容</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 快速开始 -->
-        <section class="cta">
-            <div class="container">
-                <h2>想要体验 AI 聊天？</h2>
-                <p>试试和我们的 AI 助手进行一次有趣的对话</p>
-                <a href="chat.html" class="btn btn-primary btn-large">现在开始聊天</a>
             </div>
         </section>
     </main>
@@ -120,7 +52,6 @@
     <footer>
         <div class="container">
             <p>&copy; 2026 Furida. 由 yixuanliu483-creator 创建</p>
-            <p>使用 Python + HTML5 + CSS3 构建 | 托管在 GitHub Pages</p>
         </div>
     </footer>
 
