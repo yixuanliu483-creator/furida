@@ -3,21 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About Ipay Anderson - Furida">
-    <title>关于 / About - Furida</title>
+    <title>关于 - Ipay Anderson</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="logo">Furida</div>
+            <div class="logo">Ipay Anderson</div>
             
-            <div class="lang-switch" style="position:absolute; top:20px; right:30px; display:flex; gap:8px; background:rgba(255,255,255,0.9); padding:6px; border-radius:30px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-                <button onclick="switchLang('zh')" id="btn-zh">中文</button>
-                <button onclick="switchLang('en')" id="btn-en">EN</button>
-                <button onclick="switchLang('ja')" id="btn-ja">日本語</button>
-            </div>
-
             <ul class="nav-links">
                 <li><a href="index.html">首页 / Home</a></li>
                 <li><a href="about.html" class="active">关于 / About</a></li>
@@ -26,13 +19,20 @@
         </div>
     </nav>
 
+    <!-- 语言切换 -->
+    <div class="lang-switch">
+        <button onclick="switchLang('zh')" id="btn-zh">中文</button>
+        <button onclick="switchLang('en')" id="btn-en">EN</button>
+        <button onclick="switchLang('ja')" id="btn-ja">日本語</button>
+    </div>
+
     <main>
         <article class="post">
-            <div class="container" style="max-width: 900px; margin: 80px auto; padding: 40px;">
-                <h1 id="about-title">关于 Furida</h1>
-                <div class="content" id="about-content" style="line-height: 1.9; font-size: 1.1rem; color: #444;">
-                    <p id="about-p1">Ipay Anderson 的个人博客项目。</p>
-                    <p id="about-p2">简洁、现代、支持多语言。</p>
+            <div class="container">
+                <h1 id="about-title">关于 Ipay Anderson</h1>
+                <div class="content" id="about-content">
+                    <p id="about-p1">这是 Ipay Anderson 的个人博客空间。</p>
+                    <p id="about-p2">专注于分享思考与创作。</p>
                     
                     <h2 id="project-intro">Furida 项目</h2>
                     <p id="project-desc">也许这未来会是第二个 Neuro Sama。</p>
@@ -43,7 +43,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Furida. By Ipay Anderson</p>
+            <p>&copy; 2026 Ipay Anderson. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -51,12 +51,12 @@
     <script>
         function switchLang(lang) {
             localStorage.setItem('lang', lang);
-            window.location.reload(); // 简单方式：刷新页面保持一致（可后续优化）
+            window.location.reload(); // 保持多语言一致
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('lang') || 'zh';
-            // 这里可扩展更多翻译
+            // 可后续扩展更多翻译
         });
     </script>
 </body>
