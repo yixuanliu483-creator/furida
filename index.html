@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ipay Anderson - Personal Blog</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 紧急修复：确保 Markdown 样式不干扰 */
+        body { font-size: 1.1rem; }
+        h1, h2 { margin: 1.5rem 0 1rem; }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -20,7 +25,7 @@
 
     <div class="lang-switch">
         <button onclick="switchLang('zh')" id="btn-zh" class="btn">中文</button>
-        <button onclick="switchLang('en')" id="btn-en" class="btn">EN</button>
+        <button onclick="switchLang('en')" id="btn-en" class="btn active">EN</button>
         <button onclick="switchLang('ja')" id="btn-ja" class="btn">日本語</button>
     </div>
 
@@ -41,7 +46,6 @@
         </section>
     </main>
 
-    <!-- Furida Project -->
     <div id="furida-project">
         <h2 id="furida-title">Furida Project</h2>
         <p id="furida-text">Maybe this will become the second Neuro Sama in the future.</p>
@@ -56,34 +60,11 @@
     <script>
         function switchLang(lang) {
             localStorage.setItem('lang', lang);
-            
             const texts = {
-                zh: {
-                    heroTitle: "Ipay Anderson",
-                    heroDesc: "个人博客 · 分享思考与创作",
-                    blogTitle: "个人博客",
-                    blogDesc: "简洁、现代的个人空间，记录生活与思考。",
-                    furidaTitle: "Furida 项目",
-                    furidaText: "也许这未来会是第二个 Neuro Sama。"
-                },
-                en: {
-                    heroTitle: "Ipay Anderson",
-                    heroDesc: "Personal Blog · Share Thoughts & Creations",
-                    blogTitle: "Personal Blog",
-                    blogDesc: "A clean and modern personal space to record life and thoughts.",
-                    furidaTitle: "Furida Project",
-                    furidaText: "Maybe this will become the second Neuro Sama in the future."
-                },
-                ja: {
-                    heroTitle: "Ipay Anderson",
-                    heroDesc: "個人ブログ · 思考と創作を共有",
-                    blogTitle: "個人ブログ",
-                    blogDesc: "生活と思考を記録するシンプルでモダンな空間。",
-                    furidaTitle: "Furida プロジェクト",
-                    furidaText: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。"
-                }
+                zh: { heroTitle: "Ipay Anderson", heroDesc: "个人博客 · 分享思考与创作", blogTitle: "个人博客", blogDesc: "简洁、现代的个人空间，记录生活与思考。", furidaTitle: "Furida 项目", furidaText: "也许这未来会是第二个 Neuro Sama。" },
+                en: { heroTitle: "Ipay Anderson", heroDesc: "Personal Blog · Share Thoughts & Creations", blogTitle: "Personal Blog", blogDesc: "A clean and modern personal space to record life and thoughts.", furidaTitle: "Furida Project", furidaText: "Maybe this will become the second Neuro Sama in the future." },
+                ja: { heroTitle: "Ipay Anderson", heroDesc: "個人ブログ · 思考と創作を共有", blogTitle: "個人ブログ", blogDesc: "生活と思考を記録するシンプルでモダンな空間。", furidaTitle: "Furida プロジェクト", furidaText: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。" }
             };
-
             const t = texts[lang];
             document.getElementById('hero-title').textContent = t.heroTitle;
             document.getElementById('hero-desc').textContent = t.heroDesc;
@@ -96,18 +77,12 @@
             document.getElementById('btn-' + lang).classList.add('active');
         }
 
-        // 默认加载英文
         document.addEventListener('DOMContentLoaded', () => {
-            // 如果之前选择过语言则使用，否则默认英文
-            const savedLang = localStorage.getItem('lang') || 'en';
-            switchLang(savedLang);
+            switchLang('en');   // 默认英文
 
-            // Furida 项目点击处理
-            document.querySelector('a[href="#furida-project"]').addEventListener('click', e => {
+            document.querySelector('a[href="#furida-project"]').addEventListener('click', function(e) {
                 e.preventDefault();
-                const section = document.getElementById('furida-project');
-                section.style.display = 'block';
-                section.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('furida-project').scrollIntoView({ behavior: 'smooth' });
             });
         });
     </script>
