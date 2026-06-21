@@ -3,58 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Furida - 个人博客">
-    <title>Furida - 个人博客</title>
+    <meta name="description" content="Ipay Anderson - Personal Blog">
+    <title>Furida - Ipay Anderson</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .lang-switch {
+            position: absolute; top: 20px; right: 30px; 
+            display: flex; gap: 10px; z-index: 100;
+        }
+        .lang-switch button {
+            background: none; border: 1px solid #0066cc; 
+            color: #0066cc; padding: 6px 14px; 
+            border-radius: 20px; cursor: pointer; font-size: 0.95rem;
+        }
+        #furida-project {
+            display: none; padding: 50px 30px; background: #f0f7ff; 
+            margin: 60px auto; max-width: 900px; border-radius: 12px; 
+            text-align: center; box-shadow: 0 4px 20px rgba(0,102,204,0.1);
+        }
+    </style>
 </head>
 <body>
-    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container">
             <div class="logo">Furida</div>
+            
+            <div class="lang-switch">
+                <button onclick="switchLang('zh')">中文</button>
+                <button onclick="switchLang('en')">EN</button>
+                <button onclick="switchLang('ja')">日本語</button>
+            </div>
+
             <ul class="nav-links">
-                <li><a href="index.html" class="active">首页</a></li>
-                <li><a href="posts.html">文章</a></li>
-                <li><a href="chat.html">AI 助手</a></li>
+                <li><a href="index.html" class="active">首页 / Home</a></li>
+                <li><a href="#furida-project">Furida 项目</a></li>
+                <li><a href="about.html">关于 / About</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- 主要内容 -->
     <main>
-        <!-- 英雄区 -->
         <section class="hero">
             <div class="container">
-                <h1>欢迎来到 Furida</h1>
-                <p>分享想法，记录生活</p>
+                <h1 id="hero-title">欢迎来到 Furida</h1>
+                <p id="hero-desc">Ipay Anderson 的个人博客</p>
                 <div class="hero-buttons">
-                    <a href="posts.html" class="btn btn-primary">阅读文章</a>
-                    <a href="chat.html" class="btn btn-secondary">AI 助手</a>
+                    <a href="#furida-project" class="btn btn-primary">探索 Furida 项目</a>
                 </div>
             </div>
         </section>
 
-        <!-- 最新文章 -->
         <section class="recent-posts">
             <div class="container">
-                <h2>最新文章</h2>
-                <div class="posts-grid" id="recentPosts">
-                    <!-- 动态加载文章 -->
-                </div>
-                <div class="view-all">
-                    <a href="posts.html" class="btn btn-outline">查看所有文章</a>
-                </div>
+                <h2 id="blog-title">个人博客</h2>
+                <p id="blog-desc" style="text-align:center; max-width:700px; margin:0 auto 40px;">
+                    简洁、现代的个人空间，由 Ipay Anderson 维护。
+                </p>
             </div>
         </section>
     </main>
 
-    <!-- 页脚 -->
+    <!-- Furida 项目 -->
+    <div id="furida-project">
+        <h2>Furida Project</h2>
+        <p id="project-text">也许这未来会是第二个 Neuro Sama。</p>
+    </div>
+
     <footer>
         <div class="container">
-            <p>&copy; 2026 Furida. 由 yixuanliu483-creator 创建</p>
+            <p>&copy; 2026 Furida. By Ipay Anderson</p>
         </div>
     </footer>
 
     <script src="js/app.js"></script>
+    <script>
+        function switchLang(lang) {
+            const texts = {
+                zh: {
+                    hero: "欢迎来到 Furida",
+                    desc: "Ipay Anderson 的个人博客",
+                    blog: "个人博客",
+                    bdesc: "简洁、现代的个人空间，由 Ipay Anderson 维护。",
+                    proj: "也许这未来会是第二个 Neuro Sama。"
+                },
+                en: {
+                    hero: "Welcome to Furida",
+                    desc: "Ipay Anderson's Personal Blog",
+                    blog: "Personal Blog",
+                    bdesc: "A clean and modern personal space maintained by Ipay Anderson.",
+                    proj: "Maybe this will become the second Neuro Sama in the future."
+                },
+                ja: {
+                    hero: "Furida へようこそ",
+                    desc: "Ipay Anderson の個人ブログ",
+                    blog: "個人ブログ",
+                    bdesc: "Ipay Anderson が管理するシンプルでモダンな個人スペース。",
+                    proj: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。"
+                }
+            };
+            const t = texts[lang];
+            document.getElementById('hero-title').textContent = t.hero;
+            document.getElementById('hero-desc').textContent = t.desc;
+            document.getElementById('blog-title').textContent = t.blog;
+            document.getElementById('blog-desc').textContent = t.bdesc;
+            document.getElementById('project-text').textContent = t.proj;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('a[href="#furida-project"]').addEventListener('click', (e) => {
+                e.preventDefault();
+                const proj = document.getElementById('furida-project');
+                proj.style.display = 'block';
+                proj.scrollIntoView({ behavior: 'smooth' });
+            });
+            switchLang('zh');
+        });
+    </script>
 </body>
 </html>
