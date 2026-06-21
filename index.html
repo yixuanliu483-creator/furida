@@ -10,20 +10,18 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo">Ipay Anderson</div>
-            
             <ul class="nav-links">
                 <li><a href="index.html" class="active">首页 / Home</a></li>
                 <li><a href="about.html">关于 / About</a></li>
-                <li><a href="#furida-project">Furida 项目</a></li>
+                <li><a href="#f-project">f 项目</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- 语言切换 -->
     <div class="lang-switch">
-        <button onclick="switchLang('zh')" id="btn-zh">中文</button>
-        <button onclick="switchLang('en')" id="btn-en">EN</button>
-        <button onclick="switchLang('ja')" id="btn-ja">日本語</button>
+        <button onclick="switchLang('zh')" id="btn-zh" class="btn">中文</button>
+        <button onclick="switchLang('en')" id="btn-en" class="btn">EN</button>
+        <button onclick="switchLang('ja')" id="btn-ja" class="btn">日本語</button>
     </div>
 
     <main>
@@ -31,9 +29,7 @@
             <div class="container">
                 <h1 id="hero-title">Ipay Anderson</h1>
                 <p id="hero-desc">个人博客 · 分享思考与创作</p>
-                <div class="hero-buttons">
-                    <a href="about.html" class="btn btn-primary">了解更多</a>
-                </div>
+                <a href="about.html" class="btn btn-primary">了解更多</a>
             </div>
         </section>
 
@@ -45,12 +41,17 @@
         </section>
     </main>
 
-    <!-- Furida 项目（仅在导航中提及，首页彻底移除） -->
-    <div id="furida-project" style="display: none;"></div>
+    <!-- f 项目 -->
+    <div id="f-project">
+        <h2 id="f-title">f 项目</h2>
+        <p id="f-text" style="font-size:1.25rem; line-height:1.9; max-width:720px; margin:0 auto;">
+            也许这未来会是第二个 Neuro Sama。
+        </p>
+    </div>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Ipay Anderson. All Rights Reserved.</p>
+            <p>&copy; 2026 Ipay Anderson</p>
         </div>
     </footer>
 
@@ -58,13 +59,32 @@
     <script>
         function switchLang(lang) {
             localStorage.setItem('lang', lang);
-            // 可后续扩展完整多语言
-            window.location.reload();
+            const texts = {
+                zh: { heroTitle: "Ipay Anderson", heroDesc: "个人博客 · 分享思考与创作", blogTitle: "个人博客", blogDesc: "简洁、现代的个人空间，记录生活与思考。", fTitle: "f 项目", fText: "也许这未来会是第二个 Neuro Sama。" },
+                en: { heroTitle: "Ipay Anderson", heroDesc: "Personal Blog · Share Thoughts & Creations", blogTitle: "Personal Blog", blogDesc: "A clean modern space to record life and thoughts.", fTitle: "f Project", fText: "Maybe this will become the second Neuro Sama in the future." },
+                ja: { heroTitle: "Ipay Anderson", heroDesc: "個人ブログ · 思考と創作を共有", blogTitle: "個人ブログ", blogDesc: "生活と思考を記録するシンプルでモダンな空間。", fTitle: "f プロジェクト", fText: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。" }
+            };
+            const t = texts[lang];
+            document.getElementById('hero-title').textContent = t.heroTitle;
+            document.getElementById('hero-desc').textContent = t.heroDesc;
+            document.getElementById('blog-title').textContent = t.blogTitle;
+            document.getElementById('blog-desc').textContent = t.blogDesc;
+            document.getElementById('f-title').textContent = t.fTitle;
+            document.getElementById('f-text').textContent = t.fText;
+
+            document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('lang') || 'zh';
-            // 未来可添加更多翻译逻辑
+            const lang = localStorage.getItem('lang') || 'zh';
+            switchLang(lang);
+
+            document.querySelector('a[href="#f-project"]').addEventListener('click', e => {
+                e.preventDefault();
+                document.getElementById('f-project').style.display = 'block';
+                document.getElementById('f-project').scrollIntoView({ behavior: 'smooth' });
+            });
         });
     </script>
 </body>
