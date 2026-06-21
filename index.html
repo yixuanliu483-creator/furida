@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Furida - Ipay Anderson</title>
+    <title>Ipay Anderson - 个人博客</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="logo">Furida</div>
+            <div class="logo">Ipay Anderson</div>
             
             <ul class="nav-links">
                 <li><a href="index.html" class="active">首页 / Home</a></li>
@@ -29,8 +29,8 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1 id="hero-title">欢迎来到 Furida</h1>
-                <p id="hero-desc">Ipay Anderson 的个人博客</p>
+                <h1 id="hero-title">Ipay Anderson</h1>
+                <p id="hero-desc">个人博客</p>
                 <div class="hero-buttons">
                     <a href="#furida-project" class="btn btn-primary">探索 Furida 项目</a>
                 </div>
@@ -45,15 +45,17 @@
         </section>
     </main>
 
-    <!-- Furida 项目 -->
+    <!-- Furida 项目（仅在此提及） -->
     <div id="furida-project">
         <h2 id="project-title">Furida Project</h2>
-        <p id="project-text" style="font-size:1.25rem; line-height:1.8;">也许这未来会是第二个 Neuro Sama。</p>
+        <p id="project-text" style="font-size:1.25rem; line-height:1.8; max-width:700px; margin:0 auto;">
+            也许这未来会是第二个 Neuro Sama。
+        </p>
     </div>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Furida. By Ipay Anderson</p>
+            <p>&copy; 2026 Ipay Anderson. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -65,10 +67,31 @@
             currentLang = lang;
             localStorage.setItem('lang', lang);
             
-            const texts = { /* 与之前相同，保持完整翻译 */ 
-                zh: { heroTitle: "欢迎来到 Furida", heroDesc: "Ipay Anderson 的个人博客", blogTitle: "个人博客", blogDesc: "简洁、现代的个人分享空间，由 Ipay Anderson 维护。", projectTitle: "Furida 项目", projectText: "也许这未来会是第二个 Neuro Sama。" },
-                en: { heroTitle: "Welcome to Furida", heroDesc: "Ipay Anderson's Personal Blog", blogTitle: "Personal Blog", blogDesc: "A clean and modern personal space maintained by Ipay Anderson.", projectTitle: "Furida Project", projectText: "Maybe this will become the second Neuro Sama in the future." },
-                ja: { heroTitle: "Furida へようこそ", heroDesc: "Ipay Anderson の個人ブログ", blogTitle: "個人ブログ", blogDesc: "Ipay Anderson が管理するシンプルでモダンな個人スペース。", projectTitle: "Furida プロジェクト", projectText: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。" }
+            const texts = {
+                zh: { 
+                    heroTitle: "Ipay Anderson", 
+                    heroDesc: "个人博客", 
+                    blogTitle: "个人博客", 
+                    blogDesc: "简洁、现代的个人分享空间，由 Ipay Anderson 维护。", 
+                    projectTitle: "Furida 项目", 
+                    projectText: "也许这未来会是第二个 Neuro Sama。" 
+                },
+                en: { 
+                    heroTitle: "Ipay Anderson", 
+                    heroDesc: "Personal Blog", 
+                    blogTitle: "Personal Blog", 
+                    blogDesc: "A clean and modern personal space maintained by Ipay Anderson.", 
+                    projectTitle: "Furida Project", 
+                    projectText: "Maybe this will become the second Neuro Sama in the future." 
+                },
+                ja: { 
+                    heroTitle: "Ipay Anderson", 
+                    heroDesc: "個人ブログ", 
+                    blogTitle: "個人ブログ", 
+                    blogDesc: "Ipay Anderson が管理するシンプルでモダンな個人スペース。", 
+                    projectTitle: "Furida プロジェクト", 
+                    projectText: "もしかしたらこれは未来の二番目の Neuro Sama になるかもしれません。" 
+                }
             };
 
             const t = texts[lang];
