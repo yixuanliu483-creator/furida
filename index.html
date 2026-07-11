@@ -10,7 +10,7 @@
     <!-- 语言抽屉菜单 -->
     <div id="langDrawer" class="lang-drawer">
         <div class="lang-drawer-content">
-            <h3>选择语言 / Language</h3>
+            <h3>选择语言</h3>
             <button class="lang-btn" onclick="switchLang('zh')" id="btn-zh">中文</button>
             <button class="lang-btn" onclick="switchLang('en')" id="btn-en">English</button>
             <button class="lang-btn" onclick="switchLang('ja')" id="btn-ja">日本語</button>
@@ -42,7 +42,7 @@
             <div class="container">
                 <h1 id="hero-title">Ipay Anderson</h1>
                 <p id="hero-desc">个人博客 · 分享思考与创作</p>
-                <a href="about.html" class="btn btn-primary" id="hero-btn">了解更多</a>
+                <a href="#furida-project" class="btn btn-primary" id="hero-btn">探索</a>
             </div>
         </section>
 
@@ -79,7 +79,7 @@
                 navFurida: "Furida 项目",
                 heroTitle: "Ipay Anderson",
                 heroDesc: "个人博客 · 分享思考与创作",
-                heroBtnText: "了解更多",
+                heroBtnText: "探索",
                 blogTitle: "个人博客",
                 blogDesc: "简洁、现代的个人空间，记录生活与思考。",
                 furidaTitle: "Furida 项目",
@@ -91,7 +91,7 @@
                 navFurida: "Furida Project",
                 heroTitle: "Ipay Anderson",
                 heroDesc: "Personal Blog · Share Thoughts & Creations",
-                heroBtnText: "Learn More",
+                heroBtnText: "Explore",
                 blogTitle: "Personal Blog",
                 blogDesc: "A clean and modern personal space to record life and thoughts.",
                 furidaTitle: "Furida Project",
@@ -103,7 +103,7 @@
                 navFurida: "Furida プロジェクト",
                 heroTitle: "Ipay Anderson",
                 heroDesc: "個人ブログ · 思考と創作を共有",
-                heroBtnText: "詳細を見る",
+                heroBtnText: "探索",
                 blogTitle: "個人ブログ",
                 blogDesc: "生活と思考を記録するシンプルでモダンな個人スペース。",
                 furidaTitle: "Furida プロジェクト",
@@ -116,18 +116,26 @@
             localStorage.setItem('lang', lang);
             const t = translations[lang];
             
-            document.getElementById('nav-home').textContent = t.navHome;
-            document.getElementById('nav-about').textContent = t.navAbout;
-            document.getElementById('nav-furida').textContent = t.navFurida;
-            document.getElementById('hero-title').textContent = t.heroTitle;
-            document.getElementById('hero-desc').textContent = t.heroDesc;
-            document.getElementById('hero-btn').textContent = t.heroBtnText;
-            document.getElementById('blog-title').textContent = t.blogTitle;
-            document.getElementById('blog-desc').textContent = t.blogDesc;
-            document.getElementById('furida-title').textContent = t.furidaTitle;
-            document.getElementById('furida-text').textContent = t.furidaText;
+            // 更新所有文本
+            const elements = {
+                'nav-home': t.navHome,
+                'nav-about': t.navAbout,
+                'nav-furida': t.navFurida,
+                'hero-title': t.heroTitle,
+                'hero-desc': t.heroDesc,
+                'hero-btn': t.heroBtnText,
+                'blog-title': t.blogTitle,
+                'blog-desc': t.blogDesc,
+                'furida-title': t.furidaTitle,
+                'furida-text': t.furidaText
+            };
+
+            for (const [id, text] of Object.entries(elements)) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            }
             
-            // 更新按钮状态
+            // 更新语言按钮活跃状态
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + lang).classList.add('active');
             
@@ -151,20 +159,32 @@
         document.addEventListener('click', function(e) {
             const drawer = document.getElementById('langDrawer');
             const toggle = document.querySelector('.lang-toggle');
-            if (!drawer.contains(e.target) && !toggle.contains(e.target)) {
+            if (drawer && !drawer.contains(e.target) && !toggle.contains(e.target)) {
                 closeLangDrawer();
             }
         });
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 默认中文
             const lang = localStorage.getItem('lang') || 'zh';
             switchLang(lang);
 
             // Furida 项目平滑滚动
-            document.querySelector('a[href="#furida-project"]').addEventListener('click', function(e) {
-                e.preventDefault();
-                document.getElementById('furida-project').scrollIntoView({ behavior: 'smooth' });
+            document.querySelectorAll('a[href="#furida-project"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = document.getElementById('furida-project');
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                        closeLangDrawer();
+                    }
+                });
+            });
+
+            // 关闭抽屉当用户滚动时
+            document.addEventListener('scroll', () => {
+                closeLangDrawer();
             });
         });
     </script>
