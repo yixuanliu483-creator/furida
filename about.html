@@ -2,61 +2,159 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>关于 - Ipay Anderson</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- 语言抽屉菜单 -->
+    <div id="langDrawer" class="lang-drawer">
+        <div class="lang-drawer-content">
+            <h3>选择语言</h3>
+            <button class="lang-btn" onclick="switchLang('zh')" id="btn-zh">中文</button>
+            <button class="lang-btn" onclick="switchLang('en')" id="btn-en">English</button>
+            <button class="lang-btn" onclick="switchLang('ja')" id="btn-ja">日本語</button>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container">
             <div class="logo">Ipay Anderson</div>
-            
-            <ul class="nav-links">
-                <li><a href="index.html">首页 / Home</a></li>
-                <li><a href="about.html" class="active">关于 / About</a></li>
-                <li><a href="index.html#furida-project">Furida 项目</a></li>
-            </ul>
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="index.html" id="nav-home">首页</a></li>
+                    <li><a href="about.html" class="active" id="nav-about">关于</a></li>
+                    <li><a href="index.html#furida-project" id="nav-furida">Furida 项目</a></li>
+                </ul>
+            </div>
+            <button class="lang-toggle" onclick="toggleLangDrawer()">
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+            </button>
         </div>
     </nav>
 
-    <!-- 语言切换 -->
-    <div class="lang-switch">
-        <button onclick="switchLang('zh')" id="btn-zh">中文</button>
-        <button onclick="switchLang('en')" id="btn-en">EN</button>
-        <button onclick="switchLang('ja')" id="btn-ja">日本語</button>
-    </div>
-
     <main>
-        <article class="post">
+        <!-- 关于页面内容 -->
+        <section class="about-section">
             <div class="container">
                 <h1 id="about-title">关于 Ipay Anderson</h1>
-                <div class="content" id="about-content">
-                    <p id="about-p1">这是 Ipay Anderson 的个人博客空间。</p>
-                    <p id="about-p2">专注于分享思考与创作。</p>
+                <div class="about-content">
+                    <p id="about-intro">这是 Ipay Anderson 的个人博客空间。</p>
+                    <p id="about-focus">专注于分享思考与创作。</p>
                     
                     <h2 id="project-intro">Furida 项目</h2>
                     <p id="project-desc">也许这未来会是第二个 Neuro Sama。</p>
                 </div>
             </div>
-        </article>
+        </section>
     </main>
 
+    <!-- 页脚 -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 Ipay Anderson. All Rights Reserved.</p>
+            <p>&copy; 2026 Ipay Anderson</p>
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
     <script>
+        // 多语言文本
+        const translations = {
+            zh: {
+                navHome: "首页",
+                navAbout: "关于",
+                navFurida: "Furida 项目",
+                aboutTitle: "关于 Ipay Anderson",
+                aboutIntro: "这是 Ipay Anderson 的个人博客空间。",
+                aboutFocus: "专注于分享思考与创作。",
+                projectIntro: "Furida 项目",
+                projectDesc: "也许这未来会是第二个 Neuro Sama。"
+            },
+            en: {
+                navHome: "Home",
+                navAbout: "About",
+                navFurida: "Furida Project",
+                aboutTitle: "About Ipay Anderson",
+                aboutIntro: "This is Ipay Anderson's personal blog space.",
+                aboutFocus: "Focus on sharing thoughts and creations.",
+                projectIntro: "Furida Project",
+                projectDesc: "Maybe this will be the second Neuro Sama in the future."
+            },
+            ja: {
+                navHome: "ホーム",
+                navAbout: "について",
+                navFurida: "Furida プロジェクト",
+                aboutTitle: "Ipay Anderson について",
+                aboutIntro: "これは Ipay Anderson の個人ブログスペースです。",
+                aboutFocus: "思考と創作の共有に焦点を当てています。",
+                projectIntro: "Furida プロジェクト",
+                projectDesc: "将来、これは第二の Neuro Sama になるかもしれません。"
+            }
+        };
+
+        // 切换语言
         function switchLang(lang) {
             localStorage.setItem('lang', lang);
-            window.location.reload(); // 保持多语言一致
+            const t = translations[lang];
+            
+            // 更新所有文本
+            const elements = {
+                'nav-home': t.navHome,
+                'nav-about': t.navAbout,
+                'nav-furida': t.navFurida,
+                'about-title': t.aboutTitle,
+                'about-intro': t.aboutIntro,
+                'about-focus': t.aboutFocus,
+                'project-intro': t.projectIntro,
+                'project-desc': t.projectDesc
+            };
+
+            for (const [id, text] of Object.entries(elements)) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            }
+            
+            // 更新语言按钮活跃状态
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + lang).classList.add('active');
+            
+            // 关闭抽屉
+            closeLangDrawer();
         }
 
+        // 切换语言抽屉
+        function toggleLangDrawer() {
+            const drawer = document.getElementById('langDrawer');
+            drawer.classList.toggle('open');
+        }
+
+        // 关闭语言抽屉
+        function closeLangDrawer() {
+            const drawer = document.getElementById('langDrawer');
+            drawer.classList.remove('open');
+        }
+
+        // 点击外部关闭抽屉
+        document.addEventListener('click', function(e) {
+            const drawer = document.getElementById('langDrawer');
+            const toggle = document.querySelector('.lang-toggle');
+            if (drawer && !drawer.contains(e.target) && !toggle.contains(e.target)) {
+                closeLangDrawer();
+            }
+        });
+
+        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('lang') || 'zh';
-            // 可后续扩展更多翻译
+            // 默认中文
+            const lang = localStorage.getItem('lang') || 'zh';
+            switchLang(lang);
+
+            // 关闭抽屉当用户滚动时
+            document.addEventListener('scroll', () => {
+                closeLangDrawer();
+            });
         });
     </script>
 </body>
