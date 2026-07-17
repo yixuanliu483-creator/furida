@@ -32,7 +32,69 @@ function sendMessage(){
 
     setTimeout(()=>{
 
-        const reply = furidaReply(text);
+async function sendMessage(){
+
+    const text = input.value.trim();
+
+    if(!text){
+        return;
+    }
+
+
+    addMessage("You", text);
+
+    input.value = "";
+
+
+    addMessage("Furida", "Thinking...");
+
+
+    try {
+
+        const response = await fetch(
+            "https://furida-ai.yixuanliu483.workers.dev",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+                    message:text
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        // 删除 Thinking
+        chatBox.lastChild.remove();
+
+
+        addMessage(
+            "Furida",
+            data.reply
+        );
+
+
+    } catch(error){
+
+        chatBox.lastChild.remove();
+
+
+        addMessage(
+            "Furida",
+            "Sorry... my connection has a problem."
+        );
+
+        console.error(error);
+
+    }
+
+}
 
         addMessage(
             "Furida",
