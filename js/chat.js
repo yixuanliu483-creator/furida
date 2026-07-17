@@ -14,24 +14,6 @@ window.onload = () => {
 
 
 // 发送消息
-
-function sendMessage(){
-
-    const text = input.value.trim();
-
-    if(!text){
-        return;
-    }
-
-
-    addMessage("You", text);
-
-
-    input.value = "";
-
-
-    setTimeout(()=>{
-
 async function sendMessage(){
 
     const text = input.value.trim();
@@ -46,7 +28,10 @@ async function sendMessage(){
     input.value = "";
 
 
-    addMessage("Furida", "Thinking...");
+    addMessage(
+        "Furida",
+        "Thinking..."
+    );
 
 
     try {
@@ -74,10 +59,23 @@ async function sendMessage(){
         chatBox.lastChild.remove();
 
 
-        addMessage(
-            "Furida",
-            data.reply
-        );
+        if(data.reply){
+
+            addMessage(
+                "Furida",
+                data.reply
+            );
+
+        }else{
+
+            addMessage(
+                "Furida",
+                "I didn't receive a response..."
+            );
+
+            console.log(data);
+
+        }
 
 
     } catch(error){
@@ -87,8 +85,9 @@ async function sendMessage(){
 
         addMessage(
             "Furida",
-            "Sorry... my connection has a problem."
+            "Connection error..."
         );
+
 
         console.error(error);
 
@@ -96,19 +95,9 @@ async function sendMessage(){
 
 }
 
-        addMessage(
-            "Furida",
-            reply
-        );
-
-    },600);
-
-}
 
 
-
-// 添加聊天消息
-
+// 添加消息
 function addMessage(name,text){
 
     const div=document.createElement("div");
@@ -125,58 +114,7 @@ function addMessage(name,text){
     chatBox.appendChild(div);
 
 
-    chatBox.scrollTop=
+    chatBox.scrollTop =
         chatBox.scrollHeight;
-
-}
-
-
-
-// Furida人格模拟
-
-function furidaReply(message){
-
-    message = message.toLowerCase();
-
-
-    if(message.includes("hello") ||
-       message.includes("hi") ||
-       message.includes("你好")){
-
-        return "Hi! Nice to meet you. I'm Furida. ✨";
-
-    }
-
-
-    if(message.includes("who") ||
-       message.includes("谁")){
-
-        return "I'm Furida, a small digital life that wants to learn and grow.";
-
-    }
-
-
-    if(message.includes("你是谁")){
-
-        return "我是 Furida。我现在还很小，但我会慢慢成长。";
-
-    }
-
-
-    const replies=[
-
-        "Interesting... tell me more.",
-        "I am still learning about this world.",
-        "Hmm, that's a curious idea.",
-        "Maybe I should remember this someday."
-
-    ];
-
-
-    return replies[
-        Math.floor(
-            Math.random()*replies.length
-        )
-    ];
 
 }
