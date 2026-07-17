@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furida - Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="logo">Furida</div>
+
+        <div class="nav-center">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<main>
+
+<section class="hero">
+    <div class="container">
+
+        <h1>Talk with Furida</h1>
+
+        <p>
+            A growing digital life.
+        </p>
+
+
+        <div id="chat-box" style="
+            margin-top:30px;
+            height:350px;
+            overflow-y:auto;
+            background:#f5f5f5;
+            padding:20px;
+            border-radius:12px;
+            text-align:left;
+        ">
+        </div>
+
+
+        <div style="
+            margin-top:20px;
+            display:flex;
+            gap:10px;
+        ">
+
+            <input 
+                id="user-input"
+                type="text"
+                placeholder="Say something to Furida..."
+                style="
+                flex:1;
+                padding:12px;
+                border-radius:8px;
+                border:1px solid #ccc;
+                "
+            >
+
+            <button 
+                onclick="sendMessage()"
+                class="btn btn-primary">
+                Send
+            </button>
+
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+
+<script src="js/chat.js"></script>
+
+</body>
+</html>
