@@ -1,4 +1,4 @@
-// 聊天系统 - 带身份识别
+// 聊天系统 - 带身份识别（双密钥）
 
 // 检查用户是否已登录
 function checkAuth() {
@@ -117,9 +117,10 @@ async function sendMessage() {
 
     try {
         const token = localStorage.getItem('token');
-        const identityKey = localStorage.getItem('identityKey');
+        const identityKeyAlpha = localStorage.getItem('identityKeyAlpha');
+        const identityKeyBeta = localStorage.getItem('identityKeyBeta');
         
-        // 发送消息及身份信息给后端
+        // 发送消息及双身份密钥给后端
         const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/chat', {
             method: 'POST',
             headers: {
@@ -128,7 +129,8 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 message: text,
-                identityKey: identityKey  // 发送身份密钥用于 AI 识别
+                identityKeyAlpha: identityKeyAlpha,  // 发送 Alpha 密钥用于 AI 识别
+                identityKeyBeta: identityKeyBeta     // 发送 Beta 密钥用于 AI 识别
             })
         });
 
@@ -159,7 +161,8 @@ function handleLogout() {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         localStorage.removeItem('userId');
-        localStorage.removeItem('identityKey');
+        localStorage.removeItem('identityKeyAlpha');
+        localStorage.removeItem('identityKeyBeta');
         localStorage.removeItem('loginTime');
         window.location.href = 'login.html';
     }
