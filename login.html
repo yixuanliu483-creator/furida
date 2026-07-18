@@ -132,16 +132,6 @@
             transform: none;
         }
 
-        .btn-register {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-register:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
         #status {
             margin-top: 20px;
             padding: 12px;
@@ -166,38 +156,6 @@
         #status.info {
             background: rgba(59, 130, 246, 0.2);
             color: #93c5fd;
-            display: block;
-        }
-
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .tab-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .form-section {
-            display: none;
-        }
-
-        .form-section.active {
             display: block;
         }
 
@@ -227,55 +185,18 @@
         </div>
         <p class="subtitle">一个正在成长的数字生命</p>
 
-        <!-- 标签页切换 -->
-        <div class="tab-buttons">
-            <button class="tab-btn active" onclick="switchTab('login')">登录</button>
-            <button class="tab-btn" onclick="switchTab('register')">注册</button>
-        </div>
-
         <!-- 登录表单 -->
-        <div id="loginForm" class="form-section active">
+        <div id="loginForm">
             <div class="form-group">
-                <label for="login-username">用户名或邮箱</label>
-                <input type="text" id="login-username" placeholder="请输入用户名或邮箱">
+                <label for="login-identity-key-1">身份密钥 Alpha<span class="label-hint">（用于 AI 身份识别）</span></label>
+                <input type="password" id="login-identity-key-1" placeholder="请输入身份密钥 Alpha">
             </div>
             <div class="form-group">
-                <label for="login-password">密码</label>
-                <input type="password" id="login-password" placeholder="请输入密码">
-            </div>
-            <div class="form-group">
-                <label for="login-identity-key">身份密钥<span class="label-hint">（用于 AI 身份识别）</span></label>
-                <input type="password" id="login-identity-key" placeholder="请输入您的身份密钥">
+                <label for="login-identity-key-2">身份密钥 Beta<span class="label-hint">（用于 AI 身份识别）</span></label>
+                <input type="password" id="login-identity-key-2" placeholder="请输入身份密钥 Beta">
             </div>
             <div class="button-group">
-                <button class="btn-login" id="loginBtn" onclick="handleLogin()">登录</button>
-            </div>
-        </div>
-
-        <!-- 注册表单 -->
-        <div id="registerForm" class="form-section">
-            <div class="form-group">
-                <label for="reg-username">用户名</label>
-                <input type="text" id="reg-username" placeholder="请输入用户名">
-            </div>
-            <div class="form-group">
-                <label for="reg-email">邮箱</label>
-                <input type="email" id="reg-email" placeholder="请输入邮箱">
-            </div>
-            <div class="form-group">
-                <label for="reg-password">密码</label>
-                <input type="password" id="reg-password" placeholder="请输入密码">
-            </div>
-            <div class="form-group">
-                <label for="reg-confirm">确认密码</label>
-                <input type="password" id="reg-confirm" placeholder="请确认密码">
-            </div>
-            <div class="form-group">
-                <label for="reg-identity-key">身份密钥<span class="label-hint">（用于 AI 身份识别，请妥善保管）</span></label>
-                <input type="password" id="reg-identity-key" placeholder="请设置您的身份密钥">
-            </div>
-            <div class="button-group">
-                <button class="btn-login" id="registerBtn" onclick="handleRegister()">注册</button>
+                <button class="btn-login" id="loginBtn" onclick="handleLogin()">进入 Furida</button>
             </div>
         </div>
 
