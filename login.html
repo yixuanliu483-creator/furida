@@ -1,74 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Furida - Identity Verification</title>
+    <title>Furida - 身份认证</title>
 
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        body{
-            margin:0;
-            background:#0d1117;
-            color:white;
-            font-family:Arial,sans-serif;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .login-card{
-            width:340px;
-            padding:30px;
-            border-radius:16px;
-            background:#161b22;
-            box-shadow:0 0 20px rgba(0,0,0,.4);
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        h1{
-            text-align:center;
-            margin-bottom:10px;
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
         }
 
-        p{
-            text-align:center;
-            color:#8b949e;
-            margin-bottom:30px;
+        .logo h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        input{
-            width:100%;
-            padding:12px;
-            margin-top:8px;
-            margin-bottom:18px;
-            border:none;
-            border-radius:8px;
-            background:#21262d;
-            color:white;
-            box-sizing:border-box;
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
         }
 
-        button{
-            width:100%;
-            padding:14px;
-            border:none;
-            border-radius:8px;
-            background:#238636;
-            color:white;
-            cursor:pointer;
-            font-size:16px;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        button:hover{
-            background:#2ea043;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        #status{
-            margin-top:20px;
-            text-align:center;
-            color:#58a6ff;
+        .label-hint {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        input[type="password"],
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input[type="password"]::placeholder,
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input[type="password"]:focus,
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-register {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-register:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+
+        #status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            display: block;
+        }
+
+        #status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            display: block;
+        }
+
+        #status.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            display: block;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 
@@ -76,33 +221,69 @@
 
 <body>
 
-<div class="login-card">
+    <div class="login-container">
+        <div class="logo">
+            <h1>Furida</h1>
+        </div>
+        <p class="subtitle">一个正在成长的数字生命</p>
 
-<h1>Furida</h1>
+        <!-- 标签页切换 -->
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('login')">登录</button>
+            <button class="tab-btn" onclick="switchTab('register')">注册</button>
+        </div>
 
-<p>Identity Verification</p>
+        <!-- 登录表单 -->
+        <div id="loginForm" class="form-section active">
+            <div class="form-group">
+                <label for="login-username">用户名或邮箱</label>
+                <input type="text" id="login-username" placeholder="请输入用户名或邮箱">
+            </div>
+            <div class="form-group">
+                <label for="login-password">密码</label>
+                <input type="password" id="login-password" placeholder="请输入密码">
+            </div>
+            <div class="form-group">
+                <label for="login-identity-key">身份密钥<span class="label-hint">（用于 AI 身份识别）</span></label>
+                <input type="password" id="login-identity-key" placeholder="请输入您的身份密钥">
+            </div>
+            <div class="button-group">
+                <button class="btn-login" id="loginBtn" onclick="handleLogin()">登录</button>
+            </div>
+        </div>
 
-<input
-id="alpha"
-type="password"
-placeholder="Identity Key Alpha">
+        <!-- 注册表单 -->
+        <div id="registerForm" class="form-section">
+            <div class="form-group">
+                <label for="reg-username">用户名</label>
+                <input type="text" id="reg-username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="reg-email">邮箱</label>
+                <input type="email" id="reg-email" placeholder="请输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="reg-password">密码</label>
+                <input type="password" id="reg-password" placeholder="请输入密码">
+            </div>
+            <div class="form-group">
+                <label for="reg-confirm">确认密码</label>
+                <input type="password" id="reg-confirm" placeholder="请确认密码">
+            </div>
+            <div class="form-group">
+                <label for="reg-identity-key">身份密钥<span class="label-hint">（用于 AI 身份识别，请妥善保管）</span></label>
+                <input type="password" id="reg-identity-key" placeholder="请设置您的身份密钥">
+            </div>
+            <div class="button-group">
+                <button class="btn-login" id="registerBtn" onclick="handleRegister()">注册</button>
+            </div>
+        </div>
 
-<input
-id="beta"
-type="password"
-placeholder="Identity Key Beta">
+        <!-- 状态消息 -->
+        <div id="status"></div>
+    </div>
 
-<button onclick="verifyIdentity()">
-
-Verify Identity
-
-</button>
-
-<div id="status"></div>
-
-</div>
-
-<script src="js/login.js"></script>
+    <script src="js/login.js"></script>
 
 </body>
 </html>
