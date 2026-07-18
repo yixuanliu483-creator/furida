@@ -55,6 +55,9 @@
         <button onclick="testRoot()">1. 测试根路径（GET /）</button>
         <button onclick="testLogin()">2. 测试登录接口（POST /auth/login）</button>
         <button onclick="testNoCors()">3. 测试是否单纯是CORS问题（no-cors模式）</button>
+        <label class="label" style="margin-top:16px;">用于测试聊天接口的 token（从登录后的localStorage里复制，或留空测试无token情况）</label>
+        <input type="text" id="testToken" placeholder="粘贴 token（可选）">
+        <button onclick="testChat()">4. 测试聊天接口（POST /chat）</button>
 
         <div class="result" id="result"></div>
     </div>
@@ -105,6 +108,26 @@ async function testLogin() {
         show(`状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}\n\n【说明】只要看到状态码和内容，就说明请求成功到达了 Worker，不管密钥对不对，这一步都不该报"连接错误"。`);
     } catch (err) {
         show(`【捕获到异常，这就是"连接错误"的真正原因】\n类型: ${err.name}\n信息: ${err.message}\n\n常见原因：\n- CORS 被浏览器拦截\n- Worker 地址拼写错误\n- Worker 部署失败或抛出未捕获异常\n- 网络问题`);
+    }
+}
+
+async function testChat() {
+    const base = document.getElementById('workerUrl').value.trim();
+    const token = document.getElementById('testToken').value.trim();
+    show('请求中...');
+    try {
+        const res = await fetch(base + '/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ message: '你好，这是一条测试消息' })
+        });
+        const text = await res.text();
+        show(`状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}`);
+    } catch (err) {
+        show(`【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
     }
 }
 </script>
