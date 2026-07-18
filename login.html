@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furida - Identity Verification</title>
 
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body{
+            margin:0;
+            background:#0d1117;
+            color:white;
+            font-family:Arial,sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .login-card{
+            width:340px;
+            padding:30px;
+            border-radius:16px;
+            background:#161b22;
+            box-shadow:0 0 20px rgba(0,0,0,.4);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:10px;
+        }
+
+        p{
+            text-align:center;
+            color:#8b949e;
+            margin-bottom:30px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-top:8px;
+            margin-bottom:18px;
+            border:none;
+            border-radius:8px;
+            background:#21262d;
+            color:white;
+            box-sizing:border-box;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:8px;
+            background:#238636;
+            color:white;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#2ea043;
+        }
+
+        #status{
+            margin-top:20px;
+            text-align:center;
+            color:#58a6ff;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="login-card">
+
+<h1>Furida</h1>
+
+<p>Identity Verification</p>
+
+<input
+id="alpha"
+type="password"
+placeholder="Identity Key Alpha">
+
+<input
+id="beta"
+type="password"
+placeholder="Identity Key Beta">
+
+<button onclick="verifyIdentity()">
+
+Verify Identity
+
+</button>
+
+<div id="status"></div>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>
