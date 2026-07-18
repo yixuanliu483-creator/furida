@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Furida - 管理面板</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    h1 { font-size: 1.8rem; margin: 0 0 4px; }
+    h2 { font-size: 1.1rem; margin: 0 0 16px; opacity: 0.9; }
+    .subtitle { opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
+    input {
+        width: 100%; padding: 10px 14px; margin-bottom: 14px;
+        border-radius: 8px; border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.1); color: white; font-size: 0.95rem;
+    }
+    input::placeholder { color: rgba(255,255,255,0.5); }
+    button {
+        padding: 10px 20px; border: none; border-radius: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white; font-weight: 600; cursor: pointer; font-size: 0.95rem;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.danger { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    th { opacity: 0.7; font-weight: 600; }
+    .status { margin-top: 10px; padding: 10px; border-radius: 8px; display: none; font-size: 0.9rem; }
+    .status.success { background: rgba(34,197,94,0.2); color: #86efac; display: block; }
+    .status.error { background: rgba(239,68,68,0.2); color: #fca5a5; display: block; }
+    #dashboard { display: none; }
+    .log-entry { font-size: 0.85rem; opacity: 0.9; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .log-user { font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="card" id="loginCard">
+        <h1>Furida 管理面板</h1>
+        <p class="subtitle">仅创造者身份可进入</p>
+        <label>身份密钥 Alpha</label>
+        <input type="password" id="adminKeyAlpha" placeholder="请输入身份密钥 Alpha">
+        <label>身份密钥 Beta</label>
+        <input type="password" id="adminKeyBeta" placeholder="请输入身份密钥 Beta">
+        <button id="adminLoginBtn" onclick="adminLogin()">进入管理面板</button>
+        <div class="status" id="loginStatus"></div>
+    </div>
+
+    <div id="dashboard">
+        <div class="card">
+            <h2>添加用户</h2>
+            <label>用户名</label>
+            <input type="text" id="newUsername" placeholder="给这个用户起个名字">
+            <label>身份密钥 Alpha（发给该用户使用）</label>
+            <input type="text" id="newKeyAlpha" placeholder="设定一个密钥">
+            <label>身份密钥 Beta（发给该用户使用）</label>
+            <input type="text" id="newKeyBeta" placeholder="设定一个密钥">
+            <button onclick="addUser()">添加用户</button>
+            <div class="status" id="addUserStatus"></div>
+        </div>
+
+        <div class="card">
+            <h2>用户列表</h2>
+            <table id="userTable">
+                <thead><tr><th>用户名</th><th>角色</th><th>创建时间</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>记忆与日志</h2>
+            <button onclick="loadLogs()">刷新日志</button>
+            <button class="danger" onclick="resetMemory()" style="margin-left:10px;">清空全部记忆</button>
+            <div class="status" id="memoryStatus"></div>
+            <div id="logsView" style="margin-top:16px; max-height:400px; overflow-y:auto;"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const API = 'https://furida-ai.yixuanliu483.workers.dev';
+let token = localStorage.getItem('adminToken');
+
+function showStatus(id, message, type) {
+    const el = document.getElementById(id);
+    el.textContent = message;
+    el.className = 'status ' + type;
+}
+
+async function adminLogin() {
+    const identityKeyAlpha = document.getElementById('adminKeyAlpha').value.trim();
+    const identityKeyBeta = document.getElementById('adminKeyBeta').value.trim();
+    if (!identityKeyAlpha || !identityKeyBeta) {
+        showStatus('loginStatus', '请输入两个身份密钥', 'error');
+        return;
+    }
+
+    document.getElementById('adminLoginBtn').disabled = true;
+    try {
+        const res = await fetch(`${API}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identityKeyAlpha, identityKeyBeta })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success && data.role === 'creator') {
+            token = data.token;
+            localStorage.setItem('adminToken', token);
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadUsers();
+            loadLogs();
+        } else if (data.role && data.role !== 'creator') {
+            showStatus('loginStatus', '此身份不是创造者，无权访问管理面板', 'error');
+        } else {
+            showStatus('loginStatus', data.message || '身份验证失败', 'error');
+        }
+    } catch (e) {
+        showStatus('loginStatus', '连接错误，请稍后重试', 'error');
+    }
+    document.getElementById('adminLoginBtn').disabled = false;
+}
+
+async function loadUsers() {
+    const res = await fetch(`${API}/admin/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.status === 401 || res.status === 403) return adminLogout();
+    const data = await res.json();
+    const tbody = document.querySelector('#userTable tbody');
+    tbody.innerHTML = (data.users || []).map(u =>
+        `<tr><td>${u.username}</td><td>${u.role}</td><td>${u.created_at}</td></tr>`
+    ).join('');
+}
+
+async function addUser() {
+    const username = document.getElementById('newUsername').value.trim();
+    const identityKeyAlpha = document.getElementById('newKeyAlpha').value.trim();
+    const identityKeyBeta = document.getElementById('newKeyBeta').value.trim();
+
+    if (!username || !identityKeyAlpha || !identityKeyBeta) {
+        showStatus('addUserStatus', '请填写所有字段', 'error');
+        return;
+    }
+
+    const res = await fetch(`${API}/admin/add-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ username, identityKeyAlpha, identityKeyBeta })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+        showStatus('addUserStatus', `✓ 已添加用户 ${username}，请把这两个密钥发给对方`, 'success');
+        document.getElementById('newUsername').value = '';
+        document.getElementById('newKeyAlpha').value = '';
+        document.getElementById('newKeyBeta').value = '';
+        loadUsers();
+    } else {
+        showStatus('addUserStatus', data.error || '添加失败', 'error');
+    }
+}
+
+async function resetMemory() {
+    if (!confirm('确定要清空 Furida 的全部对话记录和长期记忆吗？此操作不可撤销。')) return;
+    const res = await fetch(`${API}/admin/reset-memory`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+        showStatus('memoryStatus', '✓ 记忆已清空', 'success');
+        loadLogs();
+    } else {
+        showStatus('memoryStatus', data.error || '操作失败', 'error');
+    }
+}
+
+async function loadLogs() {
+    const res = await fetch(`${API}/admin/logs`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.status === 401 || res.status === 403) return adminLogout();
+    const data = await res.json();
+
+    const view = document.getElementById('logsView');
+    const messages = (data.messages || []).map(m =>
+        `<div class="log-entry"><span class="log-user">[${m.username} - ${m.speaker}]</span> ${m.content} <span style="opacity:0.5">(${m.created_at})</span></div>`
+    ).join('');
+    const memories = (data.memories || []).map(m =>
+        `<div class="log-entry">🧠 <span class="log-user">${m.username}</span>: ${m.fact}</div>`
+    ).join('');
+
+    view.innerHTML = `<h3 style="font-size:0.95rem;">长期记忆</h3>${memories || '（暂无）'}<h3 style="font-size:0.95rem;margin-top:16px;">最近对话</h3>${messages || '（暂无）'}`;
+}
+
+function adminLogout() {
+    localStorage.removeItem('adminToken');
+    token = null;
+    document.getElementById('loginCard').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+// 若已有 token，直接尝试进入
+if (token) {
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadUsers();
+    loadLogs();
+}
+</script>
+</body>
+</html>
