@@ -19,6 +19,20 @@
                 <li><a href="about.html">About</a></li>
             </ul>
         </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div id="userAvatar" style="
+                width:32px; height:32px; border-radius:50%;
+                background:#764ba2; color:white;
+                display:flex; align-items:center; justify-content:center;
+                font-weight:600;
+            "></div>
+            <span id="username"></span>
+            <button onclick="handleLogout()" style="
+                padding:6px 12px; border-radius:6px; border:1px solid #ccc;
+                background:white; cursor:pointer; font-size:0.85rem;
+            ">退出</button>
+        </div>
     </div>
 </nav>
 
@@ -35,7 +49,7 @@
         </p>
 
 
-        <div id="chat-box" style="
+        <div id="chatMessages" style="
             margin-top:30px;
             height:350px;
             overflow-y:auto;
@@ -54,7 +68,7 @@
         ">
 
             <input 
-                id="user-input"
+                id="messageInput"
                 type="text"
                 placeholder="Say something to Furida..."
                 style="
@@ -66,6 +80,7 @@
             >
 
             <button 
+                id="sendBtn"
                 onclick="sendMessage()"
                 class="btn btn-primary">
                 Send
