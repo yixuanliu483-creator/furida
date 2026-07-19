@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         }
     });
+
+    const voiceBtn = document.getElementById('voiceToggleBtn');
+    if (voiceBtn) {
+        voiceBtn.textContent = isVoiceEnabled() ? '🔊 语音已开启' : '🔇 语音已关闭';
+    }
 });
 
 function addMessage(name, text, type = 'user') {
@@ -86,6 +91,115 @@ function removeThinkingMessage() {
     if (thinking) thinking.remove();
 }
 
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+function isVoiceEnabled() {
+    return localStorage.getItem('voiceEnabled') === 'true';
+}
+
+function toggleVoice() {
+    const enabled = !isVoiceEnabled();
+    localStorage.setItem('voiceEnabled', enabled ? 'true' : 'false');
+    const btn = document.getElementById('voiceToggleBtn');
+    if (btn) btn.textContent = enabled ? '🔊 语音已开启' : '🔇 语音已关闭';
+}
+
+async function playTTS(text) {
+    if (!isVoiceEnabled()) return;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/tts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ text })
+        });
+        const data = await response.json();
+        if (data.audio) {
+            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+            audio.play();
+        }
+    } catch (error) {
+        console.error('TTS 播放失败:', error);
+    }
+}
+
+async function toggleRecording() {
+    if (isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+        document.getElementById('micBtn').textContent = '🎤';
+        return;
+    }
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+
+        mediaRecorder.onstop = async () => {
+            stream.getTracks().forEach(track => track.stop());
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            await sendVoiceMessage(audioBlob);
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        document.getElementById('micBtn').textContent = '⏹️';
+    } catch (error) {
+        alert('无法访问麦克风，请检查权限设置');
+        console.error('录音错误:', error);
+    }
+}
+
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function sendVoiceMessage(audioBlob) {
+    const input = document.getElementById('messageInput');
+    input.placeholder = '正在识别语音...';
+
+    try {
+        const base64Audio = await blobToBase64(audioBlob);
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/stt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ audio: base64Audio })
+        });
+
+        const data = await response.json();
+        input.placeholder = 'Say something to Furida...';
+
+        if (response.ok && data.text) {
+            input.value = data.text;
+            input.focus();
+        } else {
+            alert('语音识别失败，请重试');
+        }
+    } catch (error) {
+        input.placeholder = 'Say something to Furida...';
+        alert('语音识别出错，请检查网络');
+        console.error('语音识别错误:', error);
+    }
+}
+
 async function sendMessage() {
     const input = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -126,6 +240,7 @@ async function sendMessage() {
 
         if (response.ok && data.reply) {
             addMessage('Furida', data.reply, 'assistant');
+            playTTS(data.reply);
         } else {
             addMessage('Furida', data.message || data.error || '抱歉，我没有收到回复。请稍后重试。', 'assistant');
             console.error('API 错误:', data);
