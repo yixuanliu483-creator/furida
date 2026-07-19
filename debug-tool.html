@@ -57,6 +57,7 @@
         <button onclick="testNoCors()">3. 测试是否单纯是CORS问题（no-cors模式）</button>
         <label class="label" style="margin-top:16px;">用于测试聊天接口的 token（从登录后的localStorage里复制，或留空测试无token情况）</label>
         <input type="text" id="testToken" placeholder="粘贴 token（可选）">
+        <button onclick="autoFillToken()" style="background: rgba(255,255,255,0.2);">自动读取当前浏览器已登录的 token</button>
         <button onclick="testChat()">4. 测试聊天接口（POST /chat）</button>
 
         <div class="result" id="result"></div>
@@ -108,6 +109,16 @@ async function testLogin() {
         show(`状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}\n\n【说明】只要看到状态码和内容，就说明请求成功到达了 Worker，不管密钥对不对，这一步都不该报"连接错误"。`);
     } catch (err) {
         show(`【捕获到异常，这就是"连接错误"的真正原因】\n类型: ${err.name}\n信息: ${err.message}\n\n常见原因：\n- CORS 被浏览器拦截\n- Worker 地址拼写错误\n- Worker 部署失败或抛出未捕获异常\n- 网络问题`);
+    }
+}
+
+function autoFillToken() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        document.getElementById('testToken').value = token;
+        show(`已读取到 token（说明 debug-tool 和 chat.html 在同一个网站/同源，共享 localStorage）：\n${token}`);
+    } else {
+        show('当前浏览器 localStorage 里没有 token，说明这个页面跟你登录时用的页面不是同一个域名/同一个浏览器，请先在这个浏览器里正常登录一次 login.html 再回来点这个按钮。');
     }
 }
 
