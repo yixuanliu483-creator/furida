@@ -187,11 +187,11 @@ async function sendVoiceMessage(audioBlob) {
         const data = await response.json();
         input.placeholder = 'Say something to Furida...';
 
-        if (response.ok && data.text) {
-            input.value = data.text;
-            input.focus();
+        if (response.ok && data.text && data.text.trim()) {
+            input.value = data.text.trim();
+            sendMessage();
         } else {
-            alert('语音识别失败，请重试');
+            alert('没有识别到语音内容，请重试');
         }
     } catch (error) {
         input.placeholder = 'Say something to Furida...';
