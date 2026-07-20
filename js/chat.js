@@ -33,9 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
         voiceBtn.textContent = isVoiceEnabled() ? '🔊 语音已开启' : '🔇 语音已关闭';
     }
 
+    // PWA/Service Worker 暂时停用，等后续统一实现时再开启
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.error('Service Worker 注册失败:', err);
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(reg => reg.unregister());
         });
     }
 });
