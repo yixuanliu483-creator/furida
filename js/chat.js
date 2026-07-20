@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (voiceBtn) {
         voiceBtn.textContent = isVoiceEnabled() ? '🔊 语音已开启' : '🔇 语音已关闭';
     }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.error('Service Worker 注册失败:', err);
+        });
+    }
 });
 
 function addMessage(name, text, type = 'user') {
