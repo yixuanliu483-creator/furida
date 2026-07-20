@@ -121,13 +121,17 @@ async function playTTS(text) {
         const data = await response.json();
         if (data.audio) {
             const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-            audio.play();
+            audio.play().catch(err => {
+                alert('播放被拦截：' + err.name + ' - ' + err.message);
+            });
+        } else {
+            alert('语音接口没返回音频：' + JSON.stringify(data));
         }
     } catch (error) {
+        alert('TTS 请求出错：' + error.message);
         console.error('TTS 播放失败:', error);
     }
 }
-
 async function toggleRecording() {
     if (isRecording) {
         mediaRecorder.stop();
