@@ -49,7 +49,12 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).catch(() => cachedResponse);
+      if (cachedResponse) return cachedResponse;
+      return fetch(event.request).catch(() => {
+        // 网络和缓存都没有的兜底情况，返回一个明确的错误响应，
+        // 而不是 undefined（undefined 会导致浏览器报 ERR_FAILED）
+        return new Response('离线，且没有缓存', { status: 503, statusText: 'Offline' });
+      });
     })
   );
 });
