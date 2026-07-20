@@ -163,6 +163,8 @@ async function testTTS() {
         show(`【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
     }
 }
+
+async function testChat() {
     const base = document.getElementById('workerUrl').value.trim();
     const token = document.getElementById('testToken').value.trim();
     show('请求中...');
