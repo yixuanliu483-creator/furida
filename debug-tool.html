@@ -53,6 +53,9 @@
         <input type="text" id="workerUrl" value="https://furida-ai.yixuanliu483.workers.dev">
 
         <button onclick="testRoot()">1. 测试根路径（GET /）</button>
+        <label class="label" style="margin-top:16px;">测试登录用的密钥（真实值）</label>
+        <input type="text" id="testAlpha" placeholder="Alpha 密钥">
+        <input type="text" id="testBeta" placeholder="Beta 密钥">
         <button onclick="testLogin()">2. 测试登录接口（POST /auth/login）</button>
         <button onclick="testNoCors()">3. 测试是否单纯是CORS问题（no-cors模式）</button>
         <label class="label" style="margin-top:16px;">用于测试聊天接口的 token（从登录后的localStorage里复制，或留空测试无token情况）</label>
@@ -98,12 +101,14 @@ async function testNoCors() {
 
 async function testLogin() {
     const base = document.getElementById('workerUrl').value.trim();
+    const identityKeyAlpha = document.getElementById('testAlpha').value.trim();
+    const identityKeyBeta = document.getElementById('testBeta').value.trim();
     show('请求中...');
     try {
         const res = await fetch(base + '/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ identityKeyAlpha: 'test', identityKeyBeta: 'test' })
+            body: JSON.stringify({ identityKeyAlpha, identityKeyBeta })
         });
         const text = await res.text();
         show(`状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}\n\n【说明】只要看到状态码和内容，就说明请求成功到达了 Worker，不管密钥对不对，这一步都不该报"连接错误"。`);
