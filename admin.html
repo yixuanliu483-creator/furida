@@ -82,7 +82,7 @@
         <div class="card">
             <h2>用户列表</h2>
             <table id="userTable">
-                <thead><tr><th>用户名</th><th>角色</th><th>创建时间</th></tr></thead>
+                <thead><tr><th>用户名</th><th>角色</th><th>创建时间</th><th></th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -151,8 +151,30 @@ async function loadUsers() {
     const data = await res.json();
     const tbody = document.querySelector('#userTable tbody');
     tbody.innerHTML = (data.users || []).map(u =>
-        `<tr><td>${u.username}</td><td>${u.role}</td><td>${u.created_at}</td></tr>`
+        `<tr>
+            <td>${u.username}</td>
+            <td>${u.role}</td>
+            <td>${u.created_at}</td>
+            <td>${u.role === 'creator' ? '' : `<button class="danger" style="padding:4px 10px;font-size:0.8rem;" onclick="deleteUser('${u.id}','${u.username}')">删除</button>`}</td>
+        </tr>`
     ).join('');
+}
+
+async function deleteUser(id, username) {
+    if (!confirm(`确定要删除用户「${username}」吗？此操作不可撤销。`)) return;
+
+    const res = await fetch(`${API}/admin/delete-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ id })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+        loadUsers();
+    } else {
+        alert(data.error || '删除失败');
+    }
 }
 
 async function addUser() {
