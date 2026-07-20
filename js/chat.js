@@ -106,8 +106,7 @@ function toggleVoice() {
     if (btn) btn.textContent = enabled ? '🔊 语音已开启' : '🔇 语音已关闭';
 }
 
-async function playTTS(text) {
-    if (!isVoiceEnabled()) return;
+async function fetchTTSAudio(text) {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/tts', {
@@ -119,17 +118,34 @@ async function playTTS(text) {
             body: JSON.stringify({ text })
         });
         const data = await response.json();
-        if (data.audio) {
-            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-            audio.play().catch(err => {
-                alert('播放被拦截：' + err.name + ' - ' + err.message);
-            });
-        } else {
-            alert('语音接口没返回音频：' + JSON.stringify(data));
-        }
+        return data.audio || null;
     } catch (error) {
-        alert('TTS 请求出错：' + error.message);
-        console.error('TTS 播放失败:', error);
+        console.error('TTS 请求出错:', error);
+        return null;
+    }
+}
+
+function playAudioBase64(base64) {
+    return new Promise((resolve) => {
+        const audio = new Audio(`data:audio/mp3;base64,${base64}`);
+        audio.onended = resolve;
+        audio.onerror = resolve;
+        audio.play().catch(() => resolve());
+    });
+}
+
+async function playSentencesQueue(sentences) {
+    if (!isVoiceEnabled() || !sentences || sentences.length === 0) return;
+
+    // 所有句子并行请求语音合成（不用排队等前一句处理完），
+    // 但严格按顺序播放，第一句一到就先播，后面的边生成边等待播放
+    const audioPromises = sentences.map(s => fetchTTSAudio(s));
+
+    for (const promise of audioPromises) {
+        const audioBase64 = await promise;
+        if (audioBase64) {
+            await playAudioBase64(audioBase64);
+        }
     }
 }
 
@@ -245,7 +261,7 @@ async function sendMessage() {
 
         if (response.ok && data.reply) {
             addMessage('Furida', data.reply, 'assistant');
-            playTTS(data.reply);
+            playSentencesQueue(data.sentences && data.sentences.length ? data.sentences : [data.reply]);
         } else {
             addMessage('Furida', data.message || data.error || '抱歉，我没有收到回复。请稍后重试。', 'assistant');
             console.error('API 错误:', data);
