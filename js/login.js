@@ -1,5 +1,20 @@
 // 登录系统 - 双身份密钥认证（仅登录，关闭注册）
 
+const API_URLS = ['https://furida.de5.net', 'https://furida-ai.yixuanliu483.workers.dev'];
+
+// 依次尝试每个后端地址，前一个网络请求失败（不是业务逻辑失败）才换下一个
+async function apiFetch(path, options) {
+    let lastError;
+    for (const base of API_URLS) {
+        try {
+            return await fetch(base + path, options);
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
+}
+
 function showStatus(message, type) {
     const status = document.getElementById('status');
     status.innerHTML = message;
@@ -24,7 +39,7 @@ async function handleLogin() {
     showStatus('<span class="loading"></span>正在验证身份...', 'info');
 
     try {
-        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/auth/login', {
+        const response = await apiFetch('/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ identityKeyAlpha, identityKeyBeta })
