@@ -112,8 +112,21 @@
 </div>
 
 <script>
-const API = 'https://furida-ai.yixuanliu483.workers.dev';
+const API_URLS = ['https://furida.de5.net', 'https://furida-ai.yixuanliu483.workers.dev'];
 let token = localStorage.getItem('adminToken');
+
+// 依次尝试每个后端地址，前一个网络请求失败（不是业务逻辑失败）才换下一个
+async function apiFetch(path, options) {
+    let lastError;
+    for (const base of API_URLS) {
+        try {
+            return await fetch(base + path, options);
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
+}
 
 function showStatus(id, message, type) {
     const el = document.getElementById(id);
@@ -131,7 +144,7 @@ async function adminLogin() {
 
     document.getElementById('adminLoginBtn').disabled = true;
     try {
-        const res = await fetch(`${API}/auth/login`, {
+        const res = await apiFetch('/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ identityKeyAlpha, identityKeyBeta })
@@ -158,7 +171,7 @@ async function adminLogin() {
 }
 
 async function loadAnnouncement() {
-    const res = await fetch(`${API}/announcement`, {
+    const res = await apiFetch('/announcement', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.status === 401 || res.status === 403) return adminLogout();
@@ -169,7 +182,7 @@ async function loadAnnouncement() {
 async function saveAnnouncement() {
     const content = document.getElementById('announcementText').value;
 
-    const res = await fetch(`${API}/admin/announcement`, {
+    const res = await apiFetch('/admin/announcement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ content })
@@ -184,7 +197,7 @@ async function saveAnnouncement() {
 }
 
 async function loadUsers() {
-    const res = await fetch(`${API}/admin/users`, {
+    const res = await apiFetch('/admin/users', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.status === 401 || res.status === 403) return adminLogout();
@@ -203,7 +216,7 @@ async function loadUsers() {
 async function deleteUser(id, username) {
     if (!confirm(`确定要删除用户「${username}」吗？此操作不可撤销。`)) return;
 
-    const res = await fetch(`${API}/admin/delete-user`, {
+    const res = await apiFetch('/admin/delete-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ id })
@@ -227,7 +240,7 @@ async function addUser() {
         return;
     }
 
-    const res = await fetch(`${API}/admin/add-user`, {
+    const res = await apiFetch('/admin/add-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ username, identityKeyAlpha, identityKeyBeta })
@@ -247,7 +260,7 @@ async function addUser() {
 
 async function resetMemory() {
     if (!confirm('确定要清空 Furida 的全部对话记录和长期记忆吗？此操作不可撤销。')) return;
-    const res = await fetch(`${API}/admin/reset-memory`, {
+    const res = await apiFetch('/admin/reset-memory', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -261,7 +274,7 @@ async function resetMemory() {
 }
 
 async function loadLogs() {
-    const res = await fetch(`${API}/admin/logs`, {
+    const res = await apiFetch('/admin/logs', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.status === 401 || res.status === 403) return adminLogout();
