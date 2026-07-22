@@ -68,6 +68,19 @@
 
     <div id="dashboard">
         <div class="card">
+            <h2>网站公告</h2>
+            <p class="subtitle" style="margin-bottom:10px;">用户每次打开聊天页都会看到这条公告弹窗，留空则不弹窗</p>
+            <textarea id="announcementText" rows="4" style="
+                width:100%; padding:10px 14px; margin-bottom:14px;
+                border-radius:8px; border:1px solid rgba(255,255,255,0.3);
+                background:rgba(255,255,255,0.1); color:white; font-size:0.95rem;
+                font-family:inherit; resize:vertical;
+            " placeholder="写点公告/更新说明/警告..."></textarea>
+            <button onclick="saveAnnouncement()">保存公告</button>
+            <div class="status" id="announcementStatus"></div>
+        </div>
+
+        <div class="card">
             <h2>添加用户</h2>
             <label>用户名</label>
             <input type="text" id="newUsername" placeholder="给这个用户起个名字">
@@ -132,6 +145,7 @@ async function adminLogin() {
             document.getElementById('dashboard').style.display = 'block';
             loadUsers();
             loadLogs();
+            loadAnnouncement();
         } else if (data.role && data.role !== 'creator') {
             showStatus('loginStatus', '此身份不是创造者，无权访问管理面板', 'error');
         } else {
@@ -141,6 +155,32 @@ async function adminLogin() {
         showStatus('loginStatus', '连接错误，请稍后重试', 'error');
     }
     document.getElementById('adminLoginBtn').disabled = false;
+}
+
+async function loadAnnouncement() {
+    const res = await fetch(`${API}/announcement`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.status === 401 || res.status === 403) return adminLogout();
+    const data = await res.json();
+    document.getElementById('announcementText').value = data.content || '';
+}
+
+async function saveAnnouncement() {
+    const content = document.getElementById('announcementText').value;
+
+    const res = await fetch(`${API}/admin/announcement`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ content })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+        showStatus('announcementStatus', '✓ 公告已保存', 'success');
+    } else {
+        showStatus('announcementStatus', data.error || '保存失败', 'error');
+    }
 }
 
 async function loadUsers() {
@@ -251,6 +291,7 @@ if (token) {
     document.getElementById('dashboard').style.display = 'block';
     loadUsers();
     loadLogs();
+    loadAnnouncement();
 }
 </script>
 </body>
