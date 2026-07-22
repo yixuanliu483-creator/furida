@@ -168,6 +168,7 @@ async function testChat() {
     const base = document.getElementById('workerUrl').value.trim();
     const token = document.getElementById('testToken').value.trim();
     show('请求中...');
+    const startTime = performance.now();
     try {
         const res = await fetch(base + '/chat', {
             method: 'POST',
@@ -177,10 +178,12 @@ async function testChat() {
             },
             body: JSON.stringify({ message: '你好，这是一条测试消息' })
         });
+        const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
         const text = await res.text();
-        show(`状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}`);
+        show(`耗时: ${elapsed} 秒\n\n状态码: ${res.status}\n\n返回内容（原始文本）:\n${text}`);
     } catch (err) {
-        show(`【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
+        const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+        show(`耗时: ${elapsed} 秒（失败）\n\n【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
     }
 }
 </script>
