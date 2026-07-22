@@ -1,9 +1,24 @@
 // 聊天系统 - 基于 token 的身份识别
 
+const API_URLS = ['https://furida.de5.net', 'https://furida-ai.yixuanliu483.workers.dev'];
+
+// 依次尝试每个后端地址，前一个网络请求失败（不是业务逻辑失败）才换下一个
+async function apiFetch(path, options) {
+    let lastError;
+    for (const base of API_URLS) {
+        try {
+            return await fetch(base + path, options);
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
+}
+
 async function loadAnnouncement() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/announcement', {
+        const response = await apiFetch('/announcement', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
@@ -139,7 +154,7 @@ function toggleVoice() {
 async function fetchTTSAudio(text) {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/tts', {
+        const response = await apiFetch('/tts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -226,7 +241,7 @@ async function sendVoiceMessage(audioBlob) {
         const base64Audio = await blobToBase64(audioBlob);
         const token = localStorage.getItem('token');
 
-        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/stt', {
+        const response = await apiFetch('/stt', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -270,7 +285,7 @@ async function sendMessage() {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/chat', {
+        const response = await apiFetch('/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
