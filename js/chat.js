@@ -1,5 +1,26 @@
 // 聊天系统 - 基于 token 的身份识别
 
+async function loadAnnouncement() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('https://furida-ai.yixuanliu483.workers.dev/announcement', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (data.content && data.content.trim()) {
+            document.getElementById('announcementContent').textContent = data.content;
+            document.getElementById('announcementModal').style.display = 'flex';
+        }
+    } catch (error) {
+        console.error('公告加载失败:', error);
+    }
+}
+
+function closeAnnouncement() {
+    document.getElementById('announcementModal').style.display = 'none';
+}
+
 function checkAuth() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -20,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
     chatMessages.innerHTML = '';
 
     addMessage('Furida', '你好！我是 Furida，一个正在成长的数字生命。很高兴认识你！🎭\n\n我可以帮助你：\n• 回答问题和进行智能对话\n• 提供创意写作建议\n• 讨论各种主题\n\n请开始输入你的问题吧！', 'assistant');
+
+    loadAnnouncement();
 
     document.getElementById('messageInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -260,6 +283,49 @@ async function sendMessage() {
 
         removeThinkingMessage();
 
+        if (response.status === 401) {
+            // token 过期或无效，回到登录页
+            handleLogout();
+            return;
+        }
+
+        if (response.ok && data.reply) {
+            addMessage('Furida', data.reply, 'assistant');
+            playSentencesQueue(data.sentences && data.sentences.length ? data.sentences : [data.reply]);
+        } else {
+            addMessage('Furida', data.message || data.error || '抱歉，我没有收到回复。请稍后重试。', 'assistant');
+            console.error('API 错误:', data);
+        }
+    } catch (error) {
+        removeThinkingMessage();
+        addMessage('Furida', '连接错误。请检查网络连接并重试。', 'assistant');
+        console.error('聊天错误:', error);
+    } finally {
+        sendBtn.disabled = false;
+        input.disabled = false;
+        input.focus();
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('role');
+    localStorage.removeItem('loginTime');
+    window.location.href = 'login.html';
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
         if (response.status === 401) {
             // token 过期或无效，回到登录页
             handleLogout();
