@@ -97,6 +97,8 @@
 
         <div id="chessBoard"></div>
 
+        <div id="jsErrorDisplay" style="display:none; background:#fee; color:#c00; padding:12px; border-radius:8px; margin-top:12px; text-align:left; font-family:monospace; font-size:0.85rem; white-space:pre-wrap;"></div>
+
         <div id="furidaComment"></div>
 
         <div id="chessControls">
@@ -107,6 +109,15 @@
 </section>
 </main>
 
+<script>
+window.addEventListener('error', (e) => {
+    const el = document.getElementById('jsErrorDisplay');
+    if (el) {
+        el.style.display = 'block';
+        el.textContent = `JS错误: ${e.message}\n文件: ${e.filename}\n行号: ${e.lineno}:${e.colno}`;
+    }
+});
+</script>
 <script src="js/chess.js"></script>
 
 </body>
