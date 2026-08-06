@@ -6,6 +6,25 @@ async function initLive2D() {
     const canvas = document.getElementById('live2dCanvas');
     if (!canvas) return;
 
+    const errorBox = document.getElementById('live2dError');
+
+    function showLive2DError(msg) {
+        console.error(msg);
+        if (errorBox) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = msg;
+        }
+    }
+
+    if (typeof PIXI === 'undefined') {
+        showLive2DError('PIXI 未定义 —— live2d/pixi.js 没有加载成功');
+        return;
+    }
+    if (!PIXI.live2d) {
+        showLive2DError('PIXI.live2d 未定义 —— live2d/index.min.js 没有加载成功，或者加载顺序不对');
+        return;
+    }
+
     try {
         const app = new PIXI.Application({
             view: canvas,
@@ -29,25 +48,16 @@ async function initLive2D() {
         model.x = (canvas.clientWidth - model.width * scale) / 2;
         model.y = (canvas.clientHeight - model.height * scale) / 2;
 
-        // 允许拖动模型调整位置（可选的小交互）
         model.interactive = true;
         model.buttonMode = true;
 
         window.furidaModel = model;
         furidaModel = model;
     } catch (error) {
-        console.error('Live2D 模型加载失败:', error);
-        const canvasEl = document.getElementById('live2dCanvas');
-        if (canvasEl) {
-            canvasEl.style.display = 'none';
-        }
+        showLive2DError('模型加载出错: ' + error.message);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof PIXI !== 'undefined' && PIXI.live2d) {
-        initLive2D();
-    } else {
-        console.error('PIXI 或 PIXI.live2d 未加载，跳过 Live2D 初始化');
-    }
+    initLive2D();
 });
