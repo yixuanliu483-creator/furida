@@ -1,5 +1,13 @@
 // Live2D 模型加载与初始化
 
+document.addEventListener('DOMContentLoaded', () => {
+    const errorBox = document.getElementById('live2dError');
+    if (errorBox) {
+        errorBox.style.display = 'block';
+        errorBox.textContent = '✓ live2d-init.js 文件已成功加载并开始执行';
+    }
+});
+
 let furidaModel = null;
 
 async function initLive2D() {
