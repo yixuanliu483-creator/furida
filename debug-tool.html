@@ -63,6 +63,9 @@
         <button onclick="autoFillToken()" style="background: rgba(255,255,255,0.2);">自动读取当前浏览器已登录的 token</button>
         <button onclick="testChat()">4. 测试聊天接口（POST /chat）</button>
         <button onclick="testTTS()">5. 测试语音合成接口（POST /tts）</button>
+        <label class="label" style="margin-top:16px;">任意文件网址（用代码直接读取内容，绕开浏览器自己的显示逻辑）</label>
+        <input type="text" id="anyFileUrl" placeholder="https://furida.cc.cd/js/live2d-init.js" value="https://furida.cc.cd/js/live2d-init.js">
+        <button onclick="testAnyFile()">6. 读取任意文件原始内容</button>
 
         <div class="result" id="result"></div>
     </div>
@@ -184,6 +187,19 @@ async function testChat() {
     } catch (err) {
         const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
         show(`耗时: ${elapsed} 秒（失败）\n\n【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
+    }
+}
+
+async function testAnyFile() {
+    const url = document.getElementById('anyFileUrl').value.trim();
+    show('请求中...');
+    try {
+        const res = await fetch(url);
+        const contentType = res.headers.get('content-type');
+        const text = await res.text();
+        show(`状态码: ${res.status}\nContent-Type: ${contentType}\n文件长度: ${text.length} 字符\n\n前500字符内容:\n${text.substring(0, 500)}`);
+    } catch (err) {
+        show(`【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
     }
 }
 </script>
