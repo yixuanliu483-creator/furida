@@ -64,7 +64,8 @@
         <button onclick="testChat()">4. 测试聊天接口（POST /chat）</button>
         <button onclick="testTTS()">5. 测试语音合成接口（POST /tts）</button>
         <label class="label" style="margin-top:16px;">任意文件网址（用代码直接读取内容，绕开浏览器自己的显示逻辑）</label>
-        <input type="text" id="anyFileUrl" placeholder="https://furida.cc.cd/js/live2d-init.js" value="https://furida.cc.cd/js/live2d-init.js">
+        <input type="text" id="anyFileUrl" placeholder="https://furida.cc.cd/js/live2d-init.js" value="https://furida.cc.cd/chat.html">
+        <input type="text" id="anyFileKeyword" placeholder="要搜索的关键词，如 live2d-init（留空则只显示前500字符）">
         <button onclick="testAnyFile()">6. 读取任意文件原始内容</button>
 
         <div class="result" id="result"></div>
@@ -192,12 +193,29 @@ async function testChat() {
 
 async function testAnyFile() {
     const url = document.getElementById('anyFileUrl').value.trim();
+    const keyword = document.getElementById('anyFileKeyword').value.trim();
     show('请求中...');
     try {
         const res = await fetch(url);
         const contentType = res.headers.get('content-type');
         const text = await res.text();
-        show(`状态码: ${res.status}\nContent-Type: ${contentType}\n文件长度: ${text.length} 字符\n\n前500字符内容:\n${text.substring(0, 500)}`);
+
+        let result = `状态码: ${res.status}\nContent-Type: ${contentType}\n文件长度: ${text.length} 字符\n\n`;
+
+        if (keyword) {
+            const idx = text.indexOf(keyword);
+            if (idx === -1) {
+                result += `❌ 没有找到关键词 "${keyword}"`;
+            } else {
+                const start = Math.max(0, idx - 100);
+                const end = Math.min(text.length, idx + 300);
+                result += `✓ 找到关键词 "${keyword}"，位置附近的内容：\n...${text.substring(start, end)}...`;
+            }
+        } else {
+            result += `前500字符内容:\n${text.substring(0, 500)}`;
+        }
+
+        show(result);
     } catch (err) {
         show(`【捕获到异常】\n类型: ${err.name}\n信息: ${err.message}`);
     }
