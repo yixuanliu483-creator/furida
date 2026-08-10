@@ -69,6 +69,15 @@ async function initLive2D() {
 
         window.furidaModel = model;
         furidaModel = model;
+
+        showLive2DError(
+            `✓ 模型加载成功！\n` +
+            `model.width: ${model.width}\n` +
+            `model.height: ${model.height}\n` +
+            `canvas尺寸: ${canvas.clientWidth} x ${canvas.clientHeight}\n` +
+            `计算出的scale: ${scale}\n` +
+            `计算出的位置: x=${model.x}, y=${model.y}`
+        );
     } catch (error) {
         showLive2DError('模型加载出错: ' + error.message);
     }
