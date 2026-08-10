@@ -38,7 +38,7 @@ async function initLive2D() {
             view: canvas,
             width: canvas.clientWidth || 300,
             height: canvas.clientHeight || 400,
-            transparent: true,
+            backgroundAlpha: 0,
             autoStart: true
         });
 
