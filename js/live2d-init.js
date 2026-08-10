@@ -28,8 +28,16 @@ async function initLive2D() {
         showLive2DError('PIXI 未定义 —— live2d/pixi.js 没有加载成功');
         return;
     }
+    if (typeof Live2DCubismCore === 'undefined') {
+        showLive2DError('Live2DCubismCore 未定义 —— live2d/live2dcubismcore.min.js 没有正确加载/注册\n\nPIXI.live2d 存在: ' + (!!PIXI.live2d) + '\nPIXI.live2d.Live2DModel 存在: ' + (!!(PIXI.live2d && PIXI.live2d.Live2DModel)));
+        return;
+    }
     if (!PIXI.live2d) {
         showLive2DError('PIXI.live2d 未定义 —— live2d/index.min.js 没有加载成功，或者加载顺序不对');
+        return;
+    }
+    if (!PIXI.live2d.Live2DModel) {
+        showLive2DError('PIXI.live2d.Live2DModel 未定义，但 Live2DCubismCore 和 PIXI.live2d 都存在\n\nPIXI.live2d 里实际有的属性: ' + Object.keys(PIXI.live2d).join(', '));
         return;
     }
 
