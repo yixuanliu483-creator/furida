@@ -140,6 +140,15 @@
 </main>
 
 
+<script>
+window.addEventListener('error', (e) => {
+    const el = document.getElementById('live2dError');
+    if (el) {
+        el.style.display = 'block';
+        el.textContent = `【库文件加载时报错】\n信息: ${e.message}\n文件: ${e.filename}\n行:列 ${e.lineno}:${e.colno}`;
+    }
+});
+</script>
 <script src="live2d/pixi.js"></script>
 <script src="live2d/live2dcubismcore.min.js"></script>
 <script src="live2d/index.min.js"></script>
