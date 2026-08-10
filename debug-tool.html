@@ -203,13 +203,21 @@ async function testAnyFile() {
         let result = `状态码: ${res.status}\nContent-Type: ${contentType}\n文件长度: ${text.length} 字符\n\n`;
 
         if (keyword) {
-            const idx = text.indexOf(keyword);
-            if (idx === -1) {
-                result += `❌ 没有找到关键词 "${keyword}"`;
+            // 支持直接输入数字来按字符位置定位，比如输入 75844
+            const asNumber = parseInt(keyword, 10);
+            if (!isNaN(asNumber) && String(asNumber) === keyword) {
+                const start = Math.max(0, asNumber - 300);
+                const end = Math.min(text.length, asNumber + 300);
+                result += `✓ 位置 ${asNumber} 附近的内容：\n...${text.substring(start, end)}...`;
             } else {
-                const start = Math.max(0, idx - 100);
-                const end = Math.min(text.length, idx + 300);
-                result += `✓ 找到关键词 "${keyword}"，位置附近的内容：\n...${text.substring(start, end)}...`;
+                const idx = text.indexOf(keyword);
+                if (idx === -1) {
+                    result += `❌ 没有找到关键词 "${keyword}"`;
+                } else {
+                    const start = Math.max(0, idx - 100);
+                    const end = Math.min(text.length, idx + 300);
+                    result += `✓ 找到关键词 "${keyword}"，位置附近的内容：\n...${text.substring(start, end)}...`;
+                }
             }
         } else {
             result += `前500字符内容:\n${text.substring(0, 500)}`;
