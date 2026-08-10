@@ -50,9 +50,16 @@ async function initLive2D() {
             autoStart: true
         });
 
-        const model = await PIXI.live2d.Live2DModel.from(
+        showLive2DError('正在加载模型文件（最多等待15秒）...');
+
+        const modelPromise = PIXI.live2d.Live2DModel.from(
             'live2d/models/hiyori/runtime/hiyori_pro_t11.model3.json'
         );
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('模型加载超时（15秒），可能是某个资源文件卡住了')), 15000)
+        );
+
+        const model = await Promise.race([modelPromise, timeoutPromise]);
 
         app.stage.addChild(model);
 
