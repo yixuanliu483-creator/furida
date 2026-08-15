@@ -86,12 +86,14 @@ async function initLive2D() {
         }
 
         // 根据画布大小自动缩放定位，让模型完整显示在画布里
-        const scaleX = canvas.clientWidth / model.width;
-        const scaleY = canvas.clientHeight / model.height;
+        const rawWidth = model.width;
+        const rawHeight = model.height;
+        const scaleX = canvas.clientWidth / rawWidth;
+        const scaleY = canvas.clientHeight / rawHeight;
         const scale = Math.min(scaleX, scaleY) * 0.9;
         model.scale.set(scale);
-        model.x = (canvas.clientWidth - model.width * scale) / 2;
-        model.y = (canvas.clientHeight - model.height * scale) / 2;
+        model.x = (canvas.clientWidth - rawWidth * scale) / 2;
+        model.y = (canvas.clientHeight - rawHeight * scale) / 2;
 
         model.interactive = true;
         model.buttonMode = true;
