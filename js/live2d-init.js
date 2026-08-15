@@ -64,12 +64,20 @@ async function initLive2D() {
         app.stage.addChild(model);
 
         // 兼容补丁：新版 Cubism Core 把 renderOrders 改名/移除了，换成了 drawOrders，
-        // 但这个显示库还在用旧属性名，这里手动补上，避免渲染时报错
+        // 但 drawOrders 存的是"优先级分组值"（比如200/300/700），不是连续排位，
+        // 需要按数值排序，重新算出 0~N-1 的连续排位，才是库内部代码期望的格式
         try {
             const drawables = model.internalModel.coreModel._model.drawables;
             if (!drawables.renderOrders && drawables.drawOrders) {
-                drawables.renderOrders = drawables.drawOrders;
-                showLive2DError('已应用 renderOrders 兼容补丁，继续加载...');
+                const n = drawables.drawOrders.length;
+                const indices = Array.from({ length: n }, (_, i) => i);
+                indices.sort((a, b) => drawables.drawOrders[a] - drawables.drawOrders[b]);
+                const renderOrders = new Int32Array(n);
+                indices.forEach((originalIndex, rank) => {
+                    renderOrders[originalIndex] = rank;
+                });
+                drawables.renderOrders = renderOrders;
+                showLive2DError('已应用 renderOrders 兼容补丁（按drawOrders排序重算），继续加载...');
             }
         } catch (patchError) {
             console.warn('兼容补丁应用失败（可能库结构不一样）:', patchError);
