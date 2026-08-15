@@ -73,7 +73,7 @@ async function initLive2D() {
             if (!drawables.renderOrders && drawables.drawOrders) {
                 const n = drawables.drawOrders.length;
                 const indices = Array.from({ length: n }, (_, i) => i);
-                indices.sort((a, b) => drawables.drawOrders[b] - drawables.drawOrders[a]);
+                indices.sort((a, b) => drawables.drawOrders[a] - drawables.drawOrders[b]);
                 const renderOrders = new Int32Array(n);
                 indices.forEach((originalIndex, rank) => {
                     renderOrders[originalIndex] = rank;
