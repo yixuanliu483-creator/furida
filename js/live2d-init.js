@@ -47,6 +47,8 @@ async function initLive2D() {
             width: canvas.clientWidth || 300,
             height: canvas.clientHeight || 400,
             backgroundAlpha: 0,
+            resolution: window.devicePixelRatio || 1,
+            autoDensity: true,
             autoStart: true
         });
 
