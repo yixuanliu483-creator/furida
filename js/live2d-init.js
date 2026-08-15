@@ -63,6 +63,18 @@ async function initLive2D() {
 
         app.stage.addChild(model);
 
+        // 兼容补丁：新版 Cubism Core 把 renderOrders 改名/移除了，换成了 drawOrders，
+        // 但这个显示库还在用旧属性名，这里手动补上，避免渲染时报错
+        try {
+            const drawables = model.internalModel.coreModel._model.drawables;
+            if (!drawables.renderOrders && drawables.drawOrders) {
+                drawables.renderOrders = drawables.drawOrders;
+                showLive2DError('已应用 renderOrders 兼容补丁，继续加载...');
+            }
+        } catch (patchError) {
+            console.warn('兼容补丁应用失败（可能库结构不一样）:', patchError);
+        }
+
         // 根据画布大小自动缩放定位，让模型完整显示在画布里
         const scaleX = canvas.clientWidth / model.width;
         const scaleY = canvas.clientHeight / model.height;
